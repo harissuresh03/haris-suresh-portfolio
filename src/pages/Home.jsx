@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaReact, FaFigma, FaPalette, FaCode, FaJava, FaJs, FaDatabase, FaMobileAlt, FaCertificate } from 'react-icons/fa';
-import { SiSpringboot, SiMysql } from 'react-icons/si';
+import { FaFigma, FaPalette, FaCode } from 'react-icons/fa';
 import ProjectCard from '../components/ProjectCard';
 import { projects } from '../data/projectsData';
 import profilePic from '../assets/images/profile.png';
