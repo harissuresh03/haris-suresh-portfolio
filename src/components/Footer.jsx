@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope, FaPhone } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaEnvelope, FaPhone } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -11,9 +11,6 @@ const Footer = () => {
           </a>
           <a href="https://www.linkedin.com/in/haris-suresh-3b1693360/" target="_blank" rel="noopener noreferrer">
             <FaLinkedin />
-          </a>
-          <a href="https://twitter.com/harissuresh" target="_blank" rel="noopener noreferrer">
-            <FaTwitter />
           </a>
           <a href="mailto:harissuresh03@gmail.com">
             <FaEnvelope />

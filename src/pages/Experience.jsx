@@ -1,43 +1,90 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaUsers, FaVideo } from 'react-icons/fa';
+import { FaUsers, FaVideo, FaTimes } from 'react-icons/fa';
 import mpte1 from '../assets/images/experience/mpte/STPM.jpg';
 import mpte2 from '../assets/images/experience/mpte/STPM2.jpg';
 import dscutem1 from '../assets/images/experience/dscutem/DiscoveringAI.png';
 
 const Experience = () => {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentImages, setCurrentImages] = useState([]);
+
+  const openLightbox = (images, index) => {
+    setCurrentImages(images);
+    setCurrentIndex(index);
+    setCurrentImage(images[index]);
+    setLightboxOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    setCurrentImage(null);
+    setCurrentImages([]);
+    document.body.style.overflow = 'auto';
+  };
+
+  const nextImage = () => {
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < currentImages.length) {
+      setCurrentIndex(nextIndex);
+      setCurrentImage(currentImages[nextIndex]);
+    }
+  };
+
+  const prevImage = () => {
+    const prevIndex = currentIndex - 1;
+    if (prevIndex >= 0) {
+      setCurrentIndex(prevIndex);
+      setCurrentImage(currentImages[prevIndex]);
+    }
+  };
+
+  // Handle keyboard navigation
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!lightboxOpen) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxOpen, currentIndex, currentImages]);
+
   const experiences = [
     {
-      title: 'Media Lead',
-      organization: 'Student Representative Council KTEJP',
+      title: 'Media & Publicity Team Lead',
+      organization: 'DSC UTeM',
       period: '2023 - Present',
-      description: 'Handle all the social media of the club (Instagram, X, Thread, Facebook). Led the media and publicity team, collaborating with external university tech clubs to promote events and increase student engagement.',
       responsibilities: [
+        'Handled content publishing and engagement for the club social media accounts',
         'Strategic social media planning and execution across multiple platforms',
         'Team leadership and project management for media initiatives',
         'Cross-club collaboration for tech events and workshops',
         'Content strategy development and analytics tracking'
       ],
       images: [
-        mpte1,
-        mpte2
+        dscutem1
       ],
       icon: <FaUsers size={50} color="var(--accent-pink)" />
     },
     {
-      title: 'Social Media Handler',
-      organization: 'Kolej Tingkatan Enam Petaling Jaya',
+      title: 'Media Lead',
+      organization: 'Student Representative Council KTEPJ',
       period: '2021 - 2023',
-      description: 'Handled the social media of the college (Instagram, Facebook, TikTok). Developed multimedia content, including videos, for college events to enhance engagement and communication.',
       responsibilities: [
-        'Created and managed content calendar for all social platforms',
-        'Produced engaging video content',
-        'Monitored social media metrics and optimized content strategy',
-        'Coordinated with event organizers for real-time coverage',
-        'Responded to inquiries and managed community interaction'
+        'Managed the college social media platforms, including Instagram, Facebook, and TikTok',
+        'Created engaging video and multimedia content for events and promotions',
+        'Produced event coverage content to improve student engagement and communication',
+        'Collaborated with event organizers to provide real-time media coverage',
+        'Managed audience interaction by responding to inquiries and engaging with the online community'
       ],
       images: [
-        dscutem1
+        mpte1,
+        mpte2
       ],
       icon: <FaVideo size={50} color="var(--accent-pink)" />
     }
@@ -52,9 +99,9 @@ const Experience = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="section-title">My Professional <span className="glow-text">Journey</span></h1>
+            <h1 className="section-title">My <span className="glow-text">Journey</span></h1>
             <p style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto 50px', color: 'var(--text-secondary)' }}>
-              A comprehensive overview of my leadership roles and the impact I've made in media and communications.
+              A comprehensive overview of my leadership roles.
             </p>
           </motion.div>
 
@@ -75,10 +122,6 @@ const Experience = () => {
                     <p style={{ color: 'var(--text-secondary)' }}>{exp.period}</p>
                   </div>
                 </div>
-
-                <p style={{ fontSize: '1.1rem', marginBottom: '30px', lineHeight: '1.8', color: 'var(--text-secondary)' }}>
-                  {exp.description}
-                </p>
 
                 <div style={{ marginBottom: '30px' }}>
                   <h3 style={{ marginBottom: '15px', color: 'var(--accent-pink)' }}>Key Responsibilities</h3>
@@ -106,10 +149,12 @@ const Experience = () => {
                             height: '200px', 
                             objectFit: 'cover', 
                             borderRadius: '10px',
-                            transition: 'transform 0.3s ease'
+                            transition: 'transform 0.3s ease',
+                            cursor: 'pointer'
                           }}
                           onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                           onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                          onClick={() => openLightbox(exp.images, i)}
                         />
                       ))}
                     </div>
@@ -120,6 +165,135 @@ const Experience = () => {
           ))}
         </div>
       </section>
+
+      {/* Lightbox Modal */}
+      {lightboxOpen && currentImage && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.95)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer'
+          }}
+          onClick={closeLightbox}
+        >
+          {/* Close button */}
+          <button
+            onClick={closeLightbox}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              background: 'none',
+              border: 'none',
+              color: 'white',
+              fontSize: '2rem',
+              cursor: 'pointer',
+              zIndex: 10000,
+              transition: 'transform 0.3s ease'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            <FaTimes />
+          </button>
+
+          {/* Previous button */}
+          {currentImages.length > 1 && currentIndex > 0 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                prevImage();
+              }}
+              style={{
+                position: 'absolute',
+                left: '20px',
+                background: 'rgba(255, 255, 255, 0.2)',
+                border: 'none',
+                color: 'white',
+                fontSize: '2rem',
+                cursor: 'pointer',
+                padding: '10px 20px',
+                borderRadius: '50%',
+                transition: 'all 0.3s ease',
+                zIndex: 10000
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.4)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)'}
+            >
+              ←
+            </button>
+          )}
+
+          {/* Next button */}
+          {currentImages.length > 1 && currentIndex < currentImages.length - 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                nextImage();
+              }}
+              style={{
+                position: 'absolute',
+                right: '20px',
+                background: 'rgba(255, 255, 255, 0.2)',
+                border: 'none',
+                color: 'white',
+                fontSize: '2rem',
+                cursor: 'pointer',
+                padding: '10px 20px',
+                borderRadius: '50%',
+                transition: 'all 0.3s ease',
+                zIndex: 10000
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.4)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)'}
+            >
+              →
+            </button>
+          )}
+
+          {/* Image counter */}
+          {currentImages.length > 1 && (
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '20px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                color: 'white',
+                background: 'rgba(0, 0, 0, 0.7)',
+                padding: '5px 15px',
+                borderRadius: '20px',
+                fontSize: '0.9rem',
+                zIndex: 10000
+              }}
+            >
+              {currentIndex + 1} / {currentImages.length}
+            </div>
+          )}
+
+          {/* Main image */}
+          <img
+            src={currentImage}
+            alt="Gallery view"
+            style={{
+              maxWidth: '90%',
+              maxHeight: '90%',
+              objectFit: 'contain',
+              borderRadius: '10px',
+              cursor: 'default'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </>
   );
 };

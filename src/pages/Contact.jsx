@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaEnvelope, FaPhone, FaMapMarker, FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
+import { FaEnvelope, FaPhone, FaMapMarker, FaGithub, FaLinkedin } from 'react-icons/fa';
 import emailjs from '@emailjs/browser';
 
 const Contact = () => {
@@ -21,14 +21,14 @@ const Contact = () => {
     
     try {
       const result = await emailjs.send(
-        'service_md461n6', // Replace with your service ID
-        'template_1nrksre', // Replace with your template ID
+        'service_md461n6',
+        'template_1nrksre',
         {
           from_name: formData.name,
           from_email: formData.email,
           message: formData.message,
         },
-        'ukNzVG3w3o-RXeYHU' // Replace with your public key
+        'ukNzVG3w3o-RXeYHU'
       );
       
       if (result.text === 'OK') {
@@ -73,13 +73,13 @@ const Contact = () => {
                       <div style={{ 
                         width: '50px', 
                         height: '50px', 
-                        background: 'rgba(102, 126, 234, 0.2)', 
+                        background: 'rgba(255, 45, 117, 0.2)', 
                         borderRadius: '50%', 
                         display: 'flex', 
                         alignItems: 'center', 
                         justifyContent: 'center',
                         fontSize: '1.5rem',
-                        color: '#667eea'
+                        color: 'var(--accent-pink)'
                       }}>
                         {info.icon}
                       </div>
@@ -102,7 +102,7 @@ const Contact = () => {
                   <a href="https://github.com/harissuresh03" target="_blank" rel="noopener noreferrer" style={{ 
                     width: '45px', 
                     height: '45px', 
-                    background: 'rgba(102, 126, 234, 0.2)', 
+                    background: 'rgba(255, 45, 117, 0.2)', 
                     borderRadius: '50%', 
                     display: 'flex', 
                     alignItems: 'center', 
@@ -116,7 +116,7 @@ const Contact = () => {
                   <a href="https://www.linkedin.com/in/haris-suresh-3b1693360/" target="_blank" rel="noopener noreferrer" style={{ 
                     width: '45px', 
                     height: '45px', 
-                    background: 'rgba(102, 126, 234, 0.2)', 
+                    background: 'rgba(255, 45, 117, 0.2)', 
                     borderRadius: '50%', 
                     display: 'flex', 
                     alignItems: 'center', 
@@ -126,20 +126,6 @@ const Contact = () => {
                     transition: 'all 0.3s ease'
                   }}>
                     <FaLinkedin />
-                  </a>
-                  <a href="https://twitter.com/harissuresh" target="_blank" rel="noopener noreferrer" style={{ 
-                    width: '45px', 
-                    height: '45px', 
-                    background: 'rgba(102, 126, 234, 0.2)', 
-                    borderRadius: '50%', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                    fontSize: '1.3rem',
-                    color: '#fff',
-                    transition: 'all 0.3s ease'
-                  }}>
-                    <FaTwitter />
                   </a>
                 </div>
               </div>

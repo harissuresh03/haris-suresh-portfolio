@@ -37,7 +37,7 @@ const Navigation = () => {
     { name: 'About Me', path: '/', sectionId: 'about' },
     { name: 'Academic Background', path: '/', sectionId: 'academic' },
     { name: 'Projects', path: '/projects', sectionId: null },
-    { name: 'Experience', path: '/experience', sectionId: null },
+    { name: 'Journey', path: '/experience', sectionId: null },
     { name: 'Contact', path: '/contact', sectionId: null },
   ];
 

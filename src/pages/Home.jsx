@@ -14,7 +14,7 @@ const Home = () => {
     {
       icon: <FaFigma size={40} />,
       title: 'UI/UX Design',
-      description: 'Creating beautiful, intuitive, and user-centered designs that enhance user experience.'
+      description: 'Creating beautiful, intuitive and user-centered designs that enhance user experience.'
     },
     {
       icon: <FaPalette size={40} />,
@@ -36,11 +36,11 @@ const Home = () => {
     },
     {
       title: 'Frameworks',
-      skills: ['React.js', 'Node.js', 'Express.js', 'Spring Boot']
+      skills: ['React.js', 'Node.js', 'Express.js']
     },
     {
       title: 'Tools & Technologies',
-      skills: ['Visual Studio Code', 'GitHub', 'Android Studio', 'Adobe Animate', 'Canva', 'Microsoft Office']
+      skills: ['Git', 'VS Code', 'GitHub', 'Android Studio', 'Adobe Animate', 'Canva', 'Microsoft Office']
     }
   ];
 
@@ -69,7 +69,7 @@ const Home = () => {
   ];
 
   const certifications = [
-    { name: 'Oracle Certified Foundations Associate', issuer: 'Oracle', date: '2024', badge: badge }
+    { name: 'Oracle Certified Foundations Associate', issuer: 'Oracle', date: '2026', badge: badge }
   ];
 
   const experiences = [
@@ -192,7 +192,7 @@ const Home = () => {
             viewport={{ once: true }}
             style={{ marginTop: '80px' }}
           >
-            <h3 style={{ textAlign: 'center', marginBottom: '40px', fontSize: '2rem' }}>Technical <span className="glow-text">Skills</span></h3>
+            <h3 style={{ textAlign: 'center', marginBottom: '40px', fontSize: '2rem' }}>My <span className="glow-text">Skills</span></h3>
             <div className="grid-3">
               {skillCategories.map((category, idx) => (
                 <div key={idx} className="card">
@@ -288,7 +288,7 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 className="section-title">Work <span className="glow-text">Experience</span></h2>
+            <h2 className="section-title">My <span className="glow-text">Journey</span></h2>
             <p className="section-subtitle">Professional journey and leadership roles</p>
           </motion.div>
           
