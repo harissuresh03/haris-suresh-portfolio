@@ -44,15 +44,27 @@ const Experience = () => {
 
   // Handle keyboard navigation
   React.useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (!lightboxOpen) return;
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowRight') nextImage();
-      if (e.key === 'ArrowLeft') prevImage();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxOpen, currentIndex, currentImages]);
+  const handleKeyDown = (e) => {
+    if (!lightboxOpen) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') {
+      const nextIndex = currentIndex + 1;
+      if (nextIndex < currentImages.length) {
+        setCurrentIndex(nextIndex);
+        setCurrentImage(currentImages[nextIndex]);
+      }
+    }
+    if (e.key === 'ArrowLeft') {
+      const prevIndex = currentIndex - 1;
+      if (prevIndex >= 0) {
+        setCurrentIndex(prevIndex);
+        setCurrentImage(currentImages[prevIndex]);
+      }
+    }
+  };
+  window.addEventListener('keydown', handleKeyDown);
+  return () => window.removeEventListener('keydown', handleKeyDown);
+}, [lightboxOpen, currentIndex, currentImages]);
 
   const experiences = [
     {
