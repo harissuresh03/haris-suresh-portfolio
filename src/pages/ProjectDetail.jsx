@@ -124,9 +124,6 @@ const ProjectDetail = () => {
                 <div style={{ background: 'rgba(255, 45, 117, 0.2)', padding: '8px 16px', borderRadius: '20px' }}>
                   <strong>Platform:</strong> {project.platform}
                 </div>
-                <div style={{ background: 'rgba(255, 45, 117, 0.2)', padding: '8px 16px', borderRadius: '20px' }}>
-                  <strong>Languages:</strong> {project.languages}
-                </div>
               </div>
 
               <h2 style={{ marginBottom: '15px', color: 'var(--accent-pink)' }}>Description</h2>
