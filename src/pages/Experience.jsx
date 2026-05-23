@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaUsers, FaVideo, FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa';
+import { FaUsers, FaVideo, FaChevronLeft, FaChevronRight, FaTimes, FaInstagram } from 'react-icons/fa';
 import mpte1 from '../assets/images/experience/mpte/STPM.jpg';
 import mpte2 from '../assets/images/experience/mpte/STPM2.jpg';
 import dscutem1 from '../assets/images/experience/dscutem/DiscoveringAI.png';
@@ -41,7 +41,8 @@ const Experience = () => {
         'Content strategy development and analytics tracking'
       ],
       images: [dscutem1, dscutem2],
-      icon: <FaUsers size={40} color="var(--accent-pink)" />
+      icon: <FaUsers size={40} color="var(--accent-pink)" />,
+      instagramUrl: 'https://www.instagram.com/dsc.utem'
     },
     {
       id: 2,
@@ -430,6 +431,97 @@ const Experience = () => {
                           </p>
                         </div>
                       )}
+
+                      {/* Instagram Link Section - Theme-matched */}
+                      {exp.instagramUrl && (
+                        <div style={{ 
+                          marginTop: '20px', 
+                          paddingTop: '15px', 
+                          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                          textAlign: 'center'
+                        }}>
+                          <div style={{ 
+                            display: 'inline-flex', 
+                            alignItems: 'center', 
+                            gap: '8px',
+                            color: 'var(--text-secondary)',
+                            fontSize: '0.9rem'
+                          }}>
+                            <span>For more info</span>
+                            <span style={{ 
+                              display: 'inline-block', 
+                              animation: 'bounce 1.5s infinite',
+                              fontSize: '1rem'
+                            }}>
+                              ↓
+                            </span>
+                          </div>
+                          <div style={{ marginTop: '12px' }}>
+                            <a
+                              href={exp.instagramUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                background: 'rgba(255, 45, 117, 0.15)',
+                                backdropFilter: 'blur(10px)',
+                                padding: '10px 24px',
+                                borderRadius: '40px',
+                                color: 'var(--accent-pink)',
+                                textDecoration: 'none',
+                                fontWeight: '600',
+                                fontSize: '0.95rem',
+                                border: '1px solid rgba(255, 45, 117, 0.3)',
+                                transition: 'all 0.3s ease',
+                                boxShadow: '0 0 10px rgba(255, 45, 117, 0.2)'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = 'rgba(255, 45, 117, 0.25)';
+                                e.currentTarget.style.borderColor = 'rgba(255, 45, 117, 0.6)';
+                                e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 45, 117, 0.4)';
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                
+                                // Create tooltip
+                                const tooltip = document.createElement('div');
+                                tooltip.id = 'instagram-tooltip';
+                                tooltip.textContent = `instagram.com/dsc.utem`;
+                                tooltip.style.cssText = `
+                                  position: fixed;
+                                  background: rgba(0, 0, 0, 0.95);
+                                  color: var(--accent-pink);
+                                  padding: 6px 12px;
+                                  border-radius: 8px;
+                                  font-size: 0.75rem;
+                                  white-space: nowrap;
+                                  z-index: 1000;
+                                  pointer-events: none;
+                                  font-family: monospace;
+                                  border: 1px solid rgba(255, 45, 117, 0.3);
+                                  backdrop-filter: blur(5px);
+                                  letter-spacing: 0.5px;
+                                `;
+                                const rect = e.currentTarget.getBoundingClientRect();
+                                tooltip.style.top = `${rect.top - 35}px`;
+                                tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
+                                document.body.appendChild(tooltip);
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = 'rgba(255, 45, 117, 0.15)';
+                                e.currentTarget.style.borderColor = 'rgba(255, 45, 117, 0.3)';
+                                e.currentTarget.style.boxShadow = '0 0 10px rgba(255, 45, 117, 0.2)';
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                const tooltip = document.getElementById('instagram-tooltip');
+                                if (tooltip) tooltip.remove();
+                              }}
+                            >
+                              <FaInstagram size={20} style={{ color: 'var(--accent-pink)' }} />
+                              <span>@dsc.utem</span>
+                            </a>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -567,6 +659,16 @@ const Experience = () => {
           />
         </div>
       )}
+
+      {/* Add bounce animation for the down arrow */}
+      <style>
+        {`
+          @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+          }
+        `}
+      </style>
     </>
   );
 };
