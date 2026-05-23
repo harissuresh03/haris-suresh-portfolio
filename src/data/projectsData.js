@@ -8,11 +8,14 @@ import ipetro7 from '../assets/images/projects/ipetro/ipetro-7.png';
 import farm2screen1 from '../assets/images/projects/farm2screen/farm2screen-1.png';
 import farm2screen2 from '../assets/images/projects/farm2screen/farm2screen-2.png';
 import farm2screen3 from '../assets/images/projects/farm2screen/farm2screen-3.png';
+import farm2screen4 from '../assets/images/projects/farm2screen/farm2screen-4.png';
+import farm2screen5 from '../assets/images/projects/farm2screen/farm2screen-5.png';
 import lumora1 from '../assets/images/projects/lumora/lumora.png';
 import retinal1 from '../assets/images/projects/retinal/retinal-1.png';
 import retinal2 from '../assets/images/projects/retinal/retinal-2.png';
 import retinal3 from '../assets/images/projects/retinal/retinal-3.png';
-import exam1 from '../assets/images/projects/exam/exam-1.png';
+import retinal4 from '../assets/images/projects/retinal/retinal-4.png';
+import exam1 from '../assets/images/projects/exam/exam-1.jpg';
 import ipetrocover from '../assets/images/ipetro.png';
 import farm2screencover from '../assets/images/farm2screen.png';
 import lumoracover from '../assets/images/lumora.png';
@@ -29,13 +32,13 @@ export const projects = [
     githubUrl: 'https://github.com/amircoderf/Workshop2-iPetro',
     coverImage: ipetrocover,
     images: [
-      ipetro1,
-      ipetro2,
-      ipetro3,
-      ipetro4,
-      ipetro5,
-      ipetro6,
-      ipetro7
+      { src: ipetro1, caption: 'Main inspection dashboard' },
+      { src: ipetro2, caption: 'Generated inspection report' },
+      { src: ipetro3, caption: 'Inspection summary' },
+      { src: ipetro4, caption: 'Photo Organization' },
+      { src: ipetro5, caption: 'Bulk edit interface for photos' },
+      { src: ipetro6, caption: 'Photo batch upload and sorting' },
+      { src: ipetro7, caption: 'Main dashboard' }
     ],
     features: [
       'Inspection record tracking and management',
@@ -53,9 +56,11 @@ export const projects = [
     githubUrl: 'https://github.com/Shom3s/farm2screen',
     coverImage: farm2screencover,
     images: [
-      farm2screen1,
-      farm2screen2,
-      farm2screen3
+      { src: farm2screen1, caption: 'Sales Analytics screen' },
+      { src: farm2screen2, caption: 'My products screen' },
+      { src: farm2screen3, caption: 'Sales Analytics screen 2' },
+      { src: farm2screen4, caption: '"Pineapple" product screen' },
+      { src: farm2screen5, caption: 'Product details screen' }
     ],
     features: [
       'Real-time pricing and order management',
@@ -65,14 +70,14 @@ export const projects = [
   },
   {
     id: 3,
-    title: 'Lumora App',
+    title: 'Lumora App (In Development)',
     description: 'Lumora is a smart mental health monitoring web application designed to help students track their emotional well-being, identify early signs of stress or mental health risks, and receive personalized support. The platform provides continuous mental health monitoring through mood tracking, self-assessment journals, behavioral insights, and data-driven recommendations. By leveraging modern web technologies and analytics, Lumora aims to encourage self-awareness and proactive mental health care among students.',
     technologies: ['JavaScript', 'React.js', 'HTML & CSS', 'Express.js (Node.js framework)', 'MySQL'],
     platform: 'Web Application',
     githubUrl: 'https://github.com/harissuresh03/lumora-app',
     coverImage: lumoracover,
     images: [
-      lumora1
+      { src: lumora1, caption: 'Lumora Image 1' }
     ],
     features: [
       'Real-time monitoring and analytics',
@@ -90,7 +95,7 @@ export const projects = [
     githubUrl: 'https://github.com/ThomsonTea/Exam-Result-Management-System',
     coverImage: examcover,
     images: [
-      exam1
+      { src: exam1, caption: 'View and export marks to Google Sheets' }
     ],
     features: [
       'Student result entry',
@@ -107,9 +112,10 @@ export const projects = [
     githubUrl: 'https://github.com/ThomsonTea/Retinal-Disease-Detection',
     coverImage: retinalcover,
     images: [
-      retinal1,
-      retinal2,
-      retinal3
+      { src: retinal1, caption: 'Main page before analysis' },
+      { src: retinal2, caption: 'Main page after analysis' },
+      { src: retinal3, caption: 'Using Teachable Machine to train the model' },
+      { src: retinal4, caption: 'Dataset of all 4 retinal disease retrieved from Kaggle' }
     ],
     features: [
       'Image upload and analysis',

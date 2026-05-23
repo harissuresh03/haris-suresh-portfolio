@@ -1,13 +1,17 @@
 // src/pages/ProjectDetail.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { FaGithub, FaArrowLeft, FaCheck, FaTimes } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaGithub, FaArrowLeft, FaCheck, FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { projects } from '../data/projectsData';
 
 const ProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  
+  // Carousel state
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [direction, setDirection] = useState(0);
   
   // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -15,18 +19,46 @@ const ProjectDetail = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentImages, setCurrentImages] = useState([]);
   
-  console.log('Project ID from URL:', id);
-  console.log('All projects:', projects);
-  
   const project = projects.find(p => p.id === parseInt(id));
-  
-  console.log('Found project:', project);
+
+  // Get images array (handle both old and new format)
+  const getImageSrc = (img) => {
+    return typeof img === 'object' ? img.src : img;
+  };
+
+  const getImageCaption = (img) => {
+    return typeof img === 'object' ? img.caption : '';
+  };
+
+  const images = project?.images || [];
+  const hasMultipleImages = images.length > 1;
+
+  // Navigation functions for carousel
+  const nextSlide = () => {
+    if (hasMultipleImages) {
+      setDirection(1);
+      setCurrentSlide((prev) => (prev + 1) % images.length);
+    }
+  };
+
+  const prevSlide = () => {
+    if (hasMultipleImages) {
+      setDirection(-1);
+      setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
+    }
+  };
+
+  // Go to specific slide
+  const goToSlide = (index) => {
+    setDirection(index > currentSlide ? 1 : -1);
+    setCurrentSlide(index);
+  };
 
   // Open lightbox with clicked image
-  const openLightbox = (images, index) => {
-    setCurrentImages(images);
+  const openLightbox = (index) => {
+    setCurrentImages(images.map(img => getImageSrc(img)));
     setCurrentIndex(index);
-    setCurrentImage(images[index]);
+    setCurrentImage(getImageSrc(images[index]));
     setLightboxOpen(true);
     document.body.style.overflow = 'hidden';
   };
@@ -39,7 +71,7 @@ const ProjectDetail = () => {
     document.body.style.overflow = 'auto';
   };
 
-  // Next image
+  // Next image in lightbox
   const nextImage = () => {
     const nextIndex = currentIndex + 1;
     if (nextIndex < currentImages.length) {
@@ -48,7 +80,7 @@ const ProjectDetail = () => {
     }
   };
 
-  // Previous image
+  // Previous image in lightbox
   const prevImage = () => {
     const prevIndex = currentIndex - 1;
     if (prevIndex >= 0) {
@@ -59,27 +91,48 @@ const ProjectDetail = () => {
 
   // Keyboard navigation
   useEffect(() => {
-  const handleKeyDown = (e) => {
-    if (!lightboxOpen) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowRight') {
-      const nextIndex = currentIndex + 1;
-      if (nextIndex < currentImages.length) {
-        setCurrentIndex(nextIndex);
-        setCurrentImage(currentImages[nextIndex]);
+    const handleKeyDown = (e) => {
+      if (lightboxOpen) {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+      } else if (hasMultipleImages) {
+        if (e.key === 'ArrowRight') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
       }
-    }
-    if (e.key === 'ArrowLeft') {
-      const prevIndex = currentIndex - 1;
-      if (prevIndex >= 0) {
-        setCurrentIndex(prevIndex);
-        setCurrentImage(currentImages[prevIndex]);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxOpen, currentIndex, currentImages, hasMultipleImages]);
+
+  // Animation variants
+  const slideVariants = {
+    enter: (direction) => ({
+      x: direction > 0 ? 500 : -500,
+      opacity: 0,
+      scale: 0.95
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        x: { type: 'spring', stiffness: 300, damping: 30 },
+        opacity: { duration: 0.3 },
+        scale: { duration: 0.3 }
       }
-    }
+    },
+    exit: (direction) => ({
+      x: direction > 0 ? -500 : 500,
+      opacity: 0,
+      scale: 0.95,
+      transition: {
+        x: { type: 'spring', stiffness: 300, damping: 30 },
+        opacity: { duration: 0.3 },
+        scale: { duration: 0.3 }
+      }
+    })
   };
-  window.addEventListener('keydown', handleKeyDown);
-  return () => window.removeEventListener('keydown', handleKeyDown);
-}, [lightboxOpen, currentIndex, currentImages]);
 
   if (!project) {
     return (
@@ -150,28 +203,164 @@ const ProjectDetail = () => {
                 ))}
               </div>
 
-              {project.images && project.images.length > 0 && (
+              {/* Carousel Gallery Section */}
+              {images.length > 0 && (
                 <>
                   <h2 style={{ marginBottom: '15px', color: 'var(--accent-pink)' }}>Screenshots</h2>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', marginBottom: '30px' }}>
-                    {project.images.map((img, i) => (
-                      <img 
-                        key={i}
-                        src={img} 
-                        alt={`${project.title} screenshot ${i + 1}`}
-                        style={{ 
-                          width: '100%', 
-                          height: '250px', 
-                          objectFit: 'cover', 
-                          borderRadius: '15px',
-                          transition: 'transform 0.3s ease',
-                          cursor: 'pointer'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                        onClick={() => openLightbox(project.images, i)}
-                      />
-                    ))}
+                  
+                  <div style={{ marginBottom: '30px' }}>
+                    {/* Main Carousel */}
+                    <div style={{ 
+                      position: 'relative', 
+                      borderRadius: '15px', 
+                      overflow: 'hidden',
+                      background: 'rgba(0,0,0,0.3)'
+                    }}>
+                      <AnimatePresence custom={direction} mode="wait">
+                        <motion.div
+                          key={currentSlide}
+                          custom={direction}
+                          variants={slideVariants}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          style={{
+                            width: '100%',
+                            cursor: 'pointer',
+                            position: 'relative'
+                          }}
+                          onClick={() => openLightbox(currentSlide)}
+                        >
+                          <img
+                            src={getImageSrc(images[currentSlide])}
+                            alt={`Screenshot ${currentSlide + 1}`}
+                            style={{
+                              width: '100%',
+                              height: '450px',
+                              objectFit: 'contain',
+                              background: 'rgba(0,0,0,0.5)'
+                            }}
+                          />
+                          
+                          {/* Caption overlay */}
+                          {getImageCaption(images[currentSlide]) && (
+                            <div style={{
+                              position: 'absolute',
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
+                              color: 'white',
+                              padding: '20px',
+                              textAlign: 'center',
+                              fontSize: '0.9rem'
+                            }}>
+                              {getImageCaption(images[currentSlide])}
+                            </div>
+                          )}
+                        </motion.div>
+                      </AnimatePresence>
+
+                      {/* Navigation Arrows */}
+                      {hasMultipleImages && (
+                        <>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); prevSlide(); }}
+                            style={{
+                              position: 'absolute',
+                              left: '10px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              background: 'rgba(0,0,0,0.5)',
+                              border: 'none',
+                              color: 'white',
+                              fontSize: '1.5rem',
+                              cursor: 'pointer',
+                              padding: '10px 15px',
+                              borderRadius: '50%',
+                              transition: 'all 0.3s ease',
+                              zIndex: 10
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.8)'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.5)'}
+                          >
+                            <FaChevronLeft />
+                          </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); nextSlide(); }}
+                            style={{
+                              position: 'absolute',
+                              right: '10px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              background: 'rgba(0,0,0,0.5)',
+                              border: 'none',
+                              color: 'white',
+                              fontSize: '1.5rem',
+                              cursor: 'pointer',
+                              padding: '10px 15px',
+                              borderRadius: '50%',
+                              transition: 'all 0.3s ease',
+                              zIndex: 10
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.8)'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.5)'}
+                          >
+                            <FaChevronRight />
+                          </button>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Thumbnail Navigation */}
+                    {hasMultipleImages && (
+                      <div style={{
+                        display: 'flex',
+                        gap: '10px',
+                        justifyContent: 'center',
+                        marginTop: '15px',
+                        flexWrap: 'wrap'
+                      }}>
+                        {images.map((img, idx) => (
+                          <motion.div
+                            key={idx}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => goToSlide(idx)}
+                            style={{
+                              width: '70px',
+                              height: '70px',
+                              borderRadius: '8px',
+                              overflow: 'hidden',
+                              cursor: 'pointer',
+                              border: idx === currentSlide ? '3px solid var(--accent-pink)' : '2px solid transparent',
+                              opacity: idx === currentSlide ? 1 : 0.6,
+                              transition: 'all 0.3s ease'
+                            }}
+                          >
+                            <img
+                              src={getImageSrc(img)}
+                              alt={`Thumbnail ${idx + 1}`}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover'
+                              }}
+                            />
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Click to enlarge hint */}
+                    <p style={{
+                      textAlign: 'center',
+                      fontSize: '0.8rem',
+                      color: 'var(--text-secondary)',
+                      marginTop: '10px'
+                    }}>
+                      Click on image to view full size
+                    </p>
                   </div>
                 </>
               )}
@@ -192,7 +381,7 @@ const ProjectDetail = () => {
         </div>
       </section>
 
-      {/* Lightbox Modal */}
+      {/* Lightbox Modal (same as before but with caption) */}
       {lightboxOpen && currentImage && (
         <div
           style={{
@@ -210,7 +399,6 @@ const ProjectDetail = () => {
           }}
           onClick={closeLightbox}
         >
-          {/* Close button */}
           <button
             onClick={closeLightbox}
             style={{
@@ -231,13 +419,9 @@ const ProjectDetail = () => {
             <FaTimes />
           </button>
 
-          {/* Previous button */}
           {currentImages.length > 1 && currentIndex > 0 && (
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                prevImage();
-              }}
+              onClick={(e) => { e.stopPropagation(); prevImage(); }}
               style={{
                 position: 'absolute',
                 left: '20px',
@@ -258,13 +442,9 @@ const ProjectDetail = () => {
             </button>
           )}
 
-          {/* Next button */}
           {currentImages.length > 1 && currentIndex < currentImages.length - 1 && (
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                nextImage();
-              }}
+              onClick={(e) => { e.stopPropagation(); nextImage(); }}
               style={{
                 position: 'absolute',
                 right: '20px',
@@ -285,27 +465,43 @@ const ProjectDetail = () => {
             </button>
           )}
 
-          {/* Image counter */}
           {currentImages.length > 1 && (
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '20px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                color: 'white',
-                background: 'rgba(0, 0, 0, 0.7)',
-                padding: '5px 15px',
-                borderRadius: '20px',
-                fontSize: '0.9rem',
-                zIndex: 10000
-              }}
-            >
+            <div style={{
+              position: 'absolute',
+              bottom: '20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              color: 'white',
+              background: 'rgba(0, 0, 0, 0.7)',
+              padding: '5px 15px',
+              borderRadius: '20px',
+              fontSize: '0.9rem',
+              zIndex: 10000
+            }}>
               {currentIndex + 1} / {currentImages.length}
             </div>
           )}
 
-          {/* Main image */}
+          {/* Caption in lightbox */}
+          {images[currentIndex] && getImageCaption(images[currentIndex]) && (
+            <div style={{
+              position: 'absolute',
+              bottom: '80px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              color: 'white',
+              background: 'rgba(0, 0, 0, 0.7)',
+              padding: '8px 20px',
+              borderRadius: '20px',
+              fontSize: '0.9rem',
+              zIndex: 10000,
+              maxWidth: '80%',
+              textAlign: 'center'
+            }}>
+              {getImageCaption(images[currentIndex])}
+            </div>
+          )}
+
           <img
             src={currentImage}
             alt="Screenshot view"

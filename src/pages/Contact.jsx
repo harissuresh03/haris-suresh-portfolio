@@ -56,7 +56,7 @@ const Contact = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="section-title">Get In Touch</h1>
+          <h1 className="section-title">Get In <span className="glow-text">Touch</span> </h1> 
           <p style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 50px', opacity: 0.9 }}>
             Have a project in mind? I'd love to hear about it. Feel free to reach out for collaborations or just a friendly chat.
           </p>

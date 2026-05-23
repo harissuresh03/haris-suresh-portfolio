@@ -78,19 +78,6 @@ a,
   color: var(--accent-pink);
 }
 
-/* Custom cursor */
-.cursor {
-  width: 20px;
-  height: 20px;
-  background: var(--accent-pink);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: difference;
-  transition: transform 0.2s;
-}
-
 /* Animated gradient background */
 body::before {
   content: '';
@@ -130,38 +117,42 @@ body::before {
   padding: 0 20px;
 }
 
-/* Section Styles */
+/* Section Styles - Consistent spacing */
 section {
-  padding: 100px 0;
+  padding: 60px 0;
   position: relative;
 }
 
 .section-title {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   letter-spacing: -0.02em;
 }
 
 .section-subtitle {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--text-secondary);
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }
 
-/* Glow text effect */
+/* ===== FIXED GLOW TEXT EFFECT - PERSISTENT ACROSS PAGES ===== */
 .glow-text {
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
-  background-size: 200% 200%;
+  background: linear-gradient(135deg, #00e5ff, #9b4dff, #ff2d75, #00e5ff);
+  background-size: 300% 300%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: gradient 3s ease infinite;
+  display: inline-block;
+  animation: gradientShift 4s ease infinite;
+  will-change: background-position;
 }
 
-@keyframes gradient {
+@keyframes gradientShift {
   0% { background-position: 0% 50%; }
+  25% { background-position: 50% 50%; }
   50% { background-position: 100% 50%; }
+  75% { background-position: 50% 50%; }
   100% { background-position: 0% 50%; }
 }
 
@@ -169,10 +160,10 @@ section {
 .btn-primary {
   background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
   color: white;
-  padding: 14px 35px;
+  padding: 12px 30px;
   border: none;
   border-radius: 50px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -207,10 +198,10 @@ section {
 .btn-secondary {
   background: transparent;
   color: var(--text-primary);
-  padding: 14px 35px;
+  padding: 12px 30px;
   border: 2px solid var(--accent-purple);
   border-radius: 50px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -232,11 +223,11 @@ section {
   background: var(--card-bg);
   backdrop-filter: blur(10px);
   border-radius: 20px;
-  padding: 30px;
+  padding: 25px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
   position: relative;
-  overflow: visible; /* Changed from 'hidden' to 'visible' to prevent button clipping */
+  overflow: visible;
 }
 
 .card::before {
@@ -249,7 +240,7 @@ section {
   background: linear-gradient(135deg, rgba(255, 45, 117, 0.1), rgba(155, 77, 255, 0.1));
   opacity: 0;
   transition: opacity 0.3s ease;
-  pointer-events: none; /* Ensure overlay doesn't block clicks */
+  pointer-events: none;
   z-index: 0;
 }
 
@@ -258,7 +249,7 @@ section {
 }
 
 .card:hover {
-  transform: translateY(-10px);
+  transform: translateY(-5px);
   border-color: var(--accent-pink);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
@@ -273,9 +264,9 @@ section {
 .skill-badge {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 8px 20px;
+  padding: 6px 16px;
   border-radius: 50px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   transition: all 0.3s ease;
   display: inline-block;
   cursor: default;
@@ -296,7 +287,7 @@ section {
 .grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+  gap: 25px;
 }
 
 /* Profile image styling */
@@ -343,12 +334,12 @@ section {
 /* Project card styling */
 .project-card {
   position: relative;
-  overflow: visible; /* Changed from 'hidden' to 'visible' */
+  overflow: visible;
 }
 
 .project-cover {
   width: 100%;
-  height: 250px;
+  height: 220px;
   object-fit: cover;
   border-radius: 15px;
   transition: transform 0.5s ease;
@@ -382,11 +373,11 @@ section {
   }
   
   .section-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
   
   section {
-    padding: 60px 0;
+    padding: 50px 0;
   }
 }
 
@@ -396,7 +387,12 @@ section {
   }
   
   .section-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
+  }
+  
+  .section-subtitle {
+    font-size: 1rem;
+    margin-bottom: 30px;
   }
 }
 
@@ -428,7 +424,7 @@ section {
 }
 
 .logo {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 700;
   background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
   -webkit-background-clip: text;
@@ -456,7 +452,7 @@ section {
   position: relative;
   background: none;
   border: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-family: inherit;
 }
 
@@ -512,8 +508,8 @@ section {
 /* Footer */
 .footer {
   background: rgba(0, 0, 0, 0.5);
-  padding: 60px 0;
-  margin-top: 80px;
+  padding: 50px 0;
+  margin-top: 60px;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -527,13 +523,13 @@ section {
 .social-links {
   display: flex;
   justify-content: center;
-  gap: 30px;
-  margin-bottom: 30px;
+  gap: 25px;
+  margin-bottom: 20px;
 }
 
 .social-links a {
   color: var(--text-secondary);
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   transition: all 0.3s ease;
 }
 
@@ -542,22 +538,81 @@ section {
   transform: translateY(-5px);
 }
 
-/* Additional fix for any clickable elements */
-[onClick], 
-[role="button"],
-button[type="button"],
-button[type="submit"],
-a[href] {
+/* Magnetic Button Effect */
+.magnetic-btn {
+  transition: transform 0.2s ease-out;
+}
+
+/* Glow on hover */
+.glow-on-hover {
+  transition: all 0.4s ease;
+}
+
+.glow-on-hover:hover {
+  box-shadow: 0 0 20px rgba(255, 45, 117, 0.6), 0 0 40px rgba(155, 77, 255, 0.4);
+  transform: translateY(-5px);
+}
+
+/* Pulse Animation for badges */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.pulse-animation {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.flip-card {
+  background: transparent;
+  perspective: 1000px;
   cursor: pointer;
+  height: 100%;
+  min-height: 400px;
 }
 
-/* Ensure links in projects page are clickable */
-.projects-page a, 
-.projects-page button {
-  pointer-events: auto !important;
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
 }
 
-/* Fix for any elements that might block clicks */
-.overlay, .card-overlay {
-  pointer-events: none;
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 20px;
+  top: 0;
+  left: 0;
+}
+
+.flip-card-front {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, rgba(255, 45, 117, 0.2), rgba(155, 77, 255, 0.2));
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border: 1px solid rgba(255, 45, 117, 0.3);
+}
+
+/* Prevent content jump during animations */
+.card, .skill-badge, .project-card {
+  will-change: transform, opacity;
 }
