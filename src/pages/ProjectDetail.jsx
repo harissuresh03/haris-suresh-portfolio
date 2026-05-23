@@ -91,19 +91,28 @@ const ProjectDetail = () => {
 
   // Keyboard navigation
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (lightboxOpen) {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowRight') nextImage();
-        if (e.key === 'ArrowLeft') prevImage();
-      } else if (hasMultipleImages) {
-        if (e.key === 'ArrowRight') nextSlide();
-        if (e.key === 'ArrowLeft') prevSlide();
+  const handleKeyDown = (e) => {
+    if (lightboxOpen) {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') {
+        const nextIndex = currentIndex + 1;
+        if (nextIndex < currentImages.length) {
+          setCurrentIndex(nextIndex);
+          setCurrentImage(currentImages[nextIndex]);
+        }
       }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxOpen, currentIndex, currentImages, hasMultipleImages]);
+      if (e.key === 'ArrowLeft') {
+        const prevIndex = currentIndex - 1;
+        if (prevIndex >= 0) {
+          setCurrentIndex(prevIndex);
+          setCurrentImage(currentImages[prevIndex]);
+        }
+      }
+    }
+  };
+  window.addEventListener('keydown', handleKeyDown);
+  return () => window.removeEventListener('keydown', handleKeyDown);
+}, [lightboxOpen, currentIndex, currentImages]);
 
   // Animation variants
   const slideVariants = {

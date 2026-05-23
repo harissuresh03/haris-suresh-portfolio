@@ -67,7 +67,7 @@ const Experience = () => {
       initialStates[exp.id] = { currentSlide: 0, direction: 0 };
     });
     setCarouselStates(initialStates);
-  }, []);
+  }, [experiences]);
 
   // Carousel navigation functions
   const nextSlide = (expId, imagesLength) => {
@@ -139,16 +139,30 @@ const Experience = () => {
 
   // Keyboard navigation
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (lightboxOpen) {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowRight') nextImage();
-        if (e.key === 'ArrowLeft') prevImage();
+  const handleKeyDown = (e) => {
+    if (lightboxOpen) {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') {
+        const nextIndex = currentIndex + 1;
+        if (nextIndex < currentImages.length) {
+          setCurrentIndex(nextIndex);
+          setCurrentImage(currentImages[nextIndex]);
+          setCurrentCaption(imageCaptions[currentImages[nextIndex]] || 'Gallery Image');
+        }
       }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxOpen, currentIndex, currentImages]);
+      if (e.key === 'ArrowLeft') {
+        const prevIndex = currentIndex - 1;
+        if (prevIndex >= 0) {
+          setCurrentIndex(prevIndex);
+          setCurrentImage(currentImages[prevIndex]);
+          setCurrentCaption(imageCaptions[currentImages[prevIndex]] || 'Gallery Image');
+        }
+      }
+    }
+  };
+  window.addEventListener('keydown', handleKeyDown);
+  return () => window.removeEventListener('keydown', handleKeyDown);
+}, [lightboxOpen, currentIndex, currentImages]);
 
   // Carousel animation variants
   const slideVariants = {
