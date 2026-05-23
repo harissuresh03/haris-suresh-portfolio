@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaUsers, FaVideo, FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa';
 import mpte1 from '../assets/images/experience/mpte/STPM.jpg';
@@ -16,14 +16,15 @@ const Experience = () => {
   const [currentImages, setCurrentImages] = useState([]);
   const [currentCaption, setCurrentCaption] = useState('');
 
-  // Image captions
-  const imageCaptions = {
+  // Image captions - wrapped in useMemo to prevent re-creation
+  const imageCaptions = useMemo(() => ({
     [dscutem1]: 'Discovering AI Event - DSC UTeM',
     [mpte1]: 'Student Representative Council Event Coverage',
     [mpte2]: 'Media Team Meeting and Planning'
-  };
+  }), []);
 
-  const experiences = [
+  // Experiences - wrapped in useMemo to prevent re-creation on every render
+  const experiences = useMemo(() => [
     {
       id: 1,
       title: 'Media & Publicity Team Lead',
@@ -38,8 +39,7 @@ const Experience = () => {
         'Content strategy development and analytics tracking'
       ],
       images: [dscutem1],
-      icon: <FaUsers size={40} color="var(--accent-pink)" />,
-      type: 'work'
+      icon: <FaUsers size={40} color="var(--accent-pink)" />
     },
     {
       id: 2,
@@ -55,12 +55,11 @@ const Experience = () => {
         'Managed audience interaction by responding to inquiries and engaging with the online community'
       ],
       images: [mpte1, mpte2],
-      icon: <FaVideo size={40} color="var(--accent-pink)" />,
-      type: 'education'
+      icon: <FaVideo size={40} color="var(--accent-pink)" />
     }
-  ];
+  ], []);
 
-  // Initialize carousel states
+  // Initialize carousel states - now experiences is stable
   useEffect(() => {
     const initialStates = {};
     experiences.forEach(exp => {
@@ -139,30 +138,30 @@ const Experience = () => {
 
   // Keyboard navigation
   useEffect(() => {
-  const handleKeyDown = (e) => {
-    if (lightboxOpen) {
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowRight') {
-        const nextIndex = currentIndex + 1;
-        if (nextIndex < currentImages.length) {
-          setCurrentIndex(nextIndex);
-          setCurrentImage(currentImages[nextIndex]);
-          setCurrentCaption(imageCaptions[currentImages[nextIndex]] || 'Gallery Image');
+    const handleKeyDown = (e) => {
+      if (lightboxOpen) {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') {
+          const nextIndex = currentIndex + 1;
+          if (nextIndex < currentImages.length) {
+            setCurrentIndex(nextIndex);
+            setCurrentImage(currentImages[nextIndex]);
+            setCurrentCaption(imageCaptions[currentImages[nextIndex]] || 'Gallery Image');
+          }
+        }
+        if (e.key === 'ArrowLeft') {
+          const prevIndex = currentIndex - 1;
+          if (prevIndex >= 0) {
+            setCurrentIndex(prevIndex);
+            setCurrentImage(currentImages[prevIndex]);
+            setCurrentCaption(imageCaptions[currentImages[prevIndex]] || 'Gallery Image');
+          }
         }
       }
-      if (e.key === 'ArrowLeft') {
-        const prevIndex = currentIndex - 1;
-        if (prevIndex >= 0) {
-          setCurrentIndex(prevIndex);
-          setCurrentImage(currentImages[prevIndex]);
-          setCurrentCaption(imageCaptions[currentImages[prevIndex]] || 'Gallery Image');
-        }
-      }
-    }
-  };
-  window.addEventListener('keydown', handleKeyDown);
-  return () => window.removeEventListener('keydown', handleKeyDown);
-}, [lightboxOpen, currentIndex, currentImages]);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxOpen, currentIndex, currentImages, imageCaptions]);
 
   // Carousel animation variants
   const slideVariants = {
@@ -208,7 +207,7 @@ const Experience = () => {
           </motion.div>
 
           {/* Timeline Container */}
-          <div style={{ position: 'relative', maxWidth: '4000px', margin: '0 auto' }}>
+          <div style={{ position: 'relative', maxWidth: '900px', margin: '0 auto' }}>
             {/* Vertical Line */}
             <div style={{
               position: 'absolute',
@@ -341,7 +340,7 @@ const Experience = () => {
                                   alt={`Gallery ${carouselState.currentSlide + 1}`}
                                   style={{
                                     width: '100%',
-                                    height: '200px',
+                                    height: '180px',
                                     objectFit: 'cover',
                                     borderRadius: '12px'
                                   }}
@@ -456,7 +455,6 @@ const Experience = () => {
           }}
           onClick={closeLightbox}
         >
-          {/* Close button */}
           <button
             onClick={closeLightbox}
             style={{
@@ -475,7 +473,6 @@ const Experience = () => {
             <FaTimes />
           </button>
 
-          {/* Previous button */}
           {currentImages.length > 1 && currentIndex > 0 && (
             <button
               onClick={(e) => { e.stopPropagation(); prevImage(); }}
@@ -497,7 +494,6 @@ const Experience = () => {
             </button>
           )}
 
-          {/* Next button */}
           {currentImages.length > 1 && currentIndex < currentImages.length - 1 && (
             <button
               onClick={(e) => { e.stopPropagation(); nextImage(); }}
@@ -519,7 +515,6 @@ const Experience = () => {
             </button>
           )}
 
-          {/* Image counter */}
           {currentImages.length > 1 && (
             <div style={{
               position: 'absolute',
@@ -537,7 +532,6 @@ const Experience = () => {
             </div>
           )}
 
-          {/* Caption */}
           {currentCaption && (
             <div style={{
               position: 'absolute',
@@ -557,7 +551,6 @@ const Experience = () => {
             </div>
           )}
 
-          {/* Main image */}
           <img
             src={currentImage}
             alt="Gallery view"
