@@ -59,11 +59,11 @@ const Home = () => {
       skills: ['Java', 'JavaScript', 'SQL', 'C++', 'HTML5', 'CSS3']
     },
     {
-      title: 'Frameworks',
+      title: 'Frameworks & Technologies',
       skills: ['React.js', 'Node.js', 'Express.js']
     },
     {
-      title: 'Tools & Technologies',
+      title: 'Tools & Software',
       skills: ['Git', 'VS Code', 'GitHub', 'Android Studio', 'Adobe Animate', 'Canva', 'Microsoft Office']
     }
   ];

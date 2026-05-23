@@ -4,6 +4,7 @@ import { FaUsers, FaVideo, FaChevronLeft, FaChevronRight, FaTimes } from 'react-
 import mpte1 from '../assets/images/experience/mpte/STPM.jpg';
 import mpte2 from '../assets/images/experience/mpte/STPM2.jpg';
 import dscutem1 from '../assets/images/experience/dscutem/DiscoveringAI.png';
+import dscutem2 from '../assets/images/experience/dscutem/SocietyDay.jpeg';
 
 const Experience = () => {
   // Carousel state for each experience
@@ -18,9 +19,10 @@ const Experience = () => {
 
   // Image captions - wrapped in useMemo to prevent re-creation
   const imageCaptions = useMemo(() => ({
-    [dscutem1]: 'Discovering AI Event - DSC UTeM',
-    [mpte1]: 'Student Representative Council Event Coverage',
-    [mpte2]: 'Media Team Meeting and Planning'
+    [dscutem1]: 'Discovering AI Event',
+    [dscutem2]: 'Society Day Event',
+    [mpte1]: 'Appreciation Award Receiving Ceremony',
+    [mpte2]: 'Official Appointment Ceremony as Media Lead'
   }), []);
 
   // Experiences - wrapped in useMemo to prevent re-creation on every render
@@ -38,7 +40,7 @@ const Experience = () => {
         'Cross-club collaboration for tech events and workshops',
         'Content strategy development and analytics tracking'
       ],
-      images: [dscutem1],
+      images: [dscutem1, dscutem2],
       icon: <FaUsers size={40} color="var(--accent-pink)" />
     },
     {
