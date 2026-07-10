@@ -81,7 +81,7 @@ export const projects = [
   },
   {
     id: 3,
-    title: 'Lumora App (In Development)',
+    title: 'Lumora: Smart Mental Health Monitoring System for Students',
     description: 'Lumora is a smart mental health monitoring web application designed for university students to track their emotional well-being, identify early signs of stress or mental health risks, and receive personalized support. The platform provides continuous mental health monitoring through mood tracking, self-assessment journals, behavioral insights, and data-driven recommendations. Unlike generic wellness apps, Lumora integrates AI-driven emotional support and counsellor oversight, aiming to encourage self-awareness and proactive mental health care among students.',
     technologies: ['JavaScript', 'React.js', 'HTML & CSS', 'Express.js (Node.js framework)', 'MySQL'],
     platform: 'Web Application',
