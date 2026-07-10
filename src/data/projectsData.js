@@ -10,7 +10,18 @@ import farm2screen2 from '../assets/images/projects/farm2screen/farm2screen-2.pn
 import farm2screen3 from '../assets/images/projects/farm2screen/farm2screen-3.png';
 import farm2screen4 from '../assets/images/projects/farm2screen/farm2screen-4.png';
 import farm2screen5 from '../assets/images/projects/farm2screen/farm2screen-5.png';
-import lumora1 from '../assets/images/projects/lumora/lumora.png';
+import lumora1 from '../assets/images/projects/lumora/login.png';
+import lumora2 from '../assets/images/projects/lumora/studentdashboard1.png';
+import lumora3 from '../assets/images/projects/lumora/studentdashboard2.png';
+import lumora4 from '../assets/images/projects/lumora/studentdashboard3.png';
+import lumora5 from '../assets/images/projects/lumora/calendarstudentdashboard.png';
+import lumora6 from '../assets/images/projects/lumora/academicstressprediction.png';
+import lumora7 from '../assets/images/projects/lumora/aicompanion.png';
+import lumora8 from '../assets/images/projects/lumora/aimoderation1.png';
+import lumora9 from '../assets/images/projects/lumora/aimoderation2.png';
+import lumora10 from '../assets/images/projects/lumora/counsellingsession.png';
+import lumora11 from '../assets/images/projects/lumora/counsellingdashboard.png';
+import lumora12 from '../assets/images/projects/lumora/crisis_email.png';
 import retinal1 from '../assets/images/projects/retinal/retinal-1.png';
 import retinal2 from '../assets/images/projects/retinal/retinal-2.png';
 import retinal3 from '../assets/images/projects/retinal/retinal-3.png';
@@ -71,18 +82,30 @@ export const projects = [
   {
     id: 3,
     title: 'Lumora App (In Development)',
-    description: 'Lumora is a smart mental health monitoring web application designed to help students track their emotional well-being, identify early signs of stress or mental health risks, and receive personalized support. The platform provides continuous mental health monitoring through mood tracking, self-assessment journals, behavioral insights, and data-driven recommendations. By leveraging modern web technologies and analytics, Lumora aims to encourage self-awareness and proactive mental health care among students.',
+    description: 'Lumora is a smart mental health monitoring web application designed for university students to track their emotional well-being, identify early signs of stress or mental health risks, and receive personalized support. The platform provides continuous mental health monitoring through mood tracking, self-assessment journals, behavioral insights, and data-driven recommendations. Unlike generic wellness apps, Lumora integrates AI-driven emotional support and counsellor oversight, aiming to encourage self-awareness and proactive mental health care among students.',
     technologies: ['JavaScript', 'React.js', 'HTML & CSS', 'Express.js (Node.js framework)', 'MySQL'],
     platform: 'Web Application',
     githubUrl: 'https://github.com/harissuresh03/lumora-app',
     coverImage: lumoracover,
     images: [
-      { src: lumora1, caption: 'Lumora Image 1' }
+      { src: lumora1, caption: 'Login Page' },
+      { src: lumora2, caption: 'Student Dashboard' },
+      { src: lumora3, caption: 'Student Dashboard' },
+      { src: lumora4, caption: 'Student Dashboard' },
+      { src: lumora5, caption: 'Mood Calendar in Student Dashboard' },
+      { src: lumora6, caption: 'Academic Stress Predictor' },
+      { src: lumora7, caption: 'AI Companion Chatbot' },
+      { src: lumora8, caption: 'AI Moderation in Peer Community Page' },
+      { src: lumora9, caption: 'AI Moderation Result' },
+      { src: lumora10, caption: 'Counselling Session Scheduling' },
+      { src: lumora11, caption: 'Counsellor Dashboard' },
+      { src: lumora12, caption: 'Crisis Email Notification' }
     ],
     features: [
       'Real-time monitoring and analytics',
       'Automatic mood detection from conversations with AI Companion',
-      'Personalized Student Support',
+      'AI-Moderated Peer Support',
+      'Academic Stress Prediction',
       'Personalized recommendations'
     ]
   },
