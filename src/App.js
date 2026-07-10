@@ -13,7 +13,6 @@ function App() {
     <>
       <ScrollToTop />
       <Navigation />
-      <ParticleBackground /> 
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
