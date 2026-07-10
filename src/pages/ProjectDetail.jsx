@@ -183,8 +183,8 @@ const ProjectDetail = () => {
               <h1 style={{ fontSize: '2.5rem', marginBottom: '20px' }}>{project.title}</h1>
               
               <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '30px' }}>
-                <div style={{ background: 'rgba(255, 45, 117, 0.2)', padding: '8px 16px', borderRadius: '20px' }}>
-                  <strong>Platform:</strong> {project.platform}
+                <div className="skill-badge" style={{ fontSize: '0.85rem', padding: '8px 16px' }}>
+                  <strong className="mono">Platform:</strong> {project.platform}
                 </div>
               </div>
 

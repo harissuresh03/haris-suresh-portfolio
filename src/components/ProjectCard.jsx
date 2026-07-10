@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaGithub } from 'react-icons/fa';
+import { FaGithub, FaArrowRight } from 'react-icons/fa';
 
 const ProjectCard = ({ project }) => {
   const navigate = useNavigate();
@@ -10,43 +10,69 @@ const ProjectCard = ({ project }) => {
   };
 
   return (
-    <div className="flip-card" style={{ height: '450px' }}>
-      <div className="flip-card-inner">
-        {/* Front of card */}
-        <div className="flip-card-front card" style={{ padding: '0', overflow: 'hidden' }}>
-          <img 
-            src={project.coverImage || project.image} 
-            alt={project.title}
-            style={{ width: '100%', height: '250px', objectFit: 'cover' }}
-          />
-          <div style={{ padding: '20px' }}>
-            <h3 style={{ marginBottom: '10px' }}>{project.title}</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-              {project.description.substring(0, 80)}...
-            </p>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '15px' }}>
-              {project.technologies.slice(0, 3).map((tech, i) => (
-                <span key={i} className="skill-badge" style={{ fontSize: '0.7rem' }}>
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
+    <div
+      className="card project-card glow-on-hover"
+      style={{ padding: 0, overflow: 'hidden', cursor: 'pointer' }}
+      onClick={handleViewDetails}
+    >
+      <img
+        src={project.coverImage || project.image}
+        alt={project.title}
+        className="project-cover"
+      />
+      <div style={{ padding: '22px' }}>
+        <h3 style={{ marginBottom: '10px', fontSize: '1.1rem' }}>{project.title}</h3>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', minHeight: '42px' }}>
+          {project.description.substring(0, 90)}...
+        </p>
+
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '16px 0' }}>
+          {project.technologies.slice(0, 3).map((tech, i) => (
+            <span key={i} className="skill-badge" style={{ fontSize: '0.72rem' }}>
+              {tech}
+            </span>
+          ))}
         </div>
-        
-        {/* Back of card */}
-        <div className="flip-card-back">
-          <div style={{ textAlign: 'center' }}>
-            <h3 style={{ marginBottom: '15px', color: 'var(--accent-pink)' }}>Project Details</h3>
-            <button onClick={handleViewDetails} className="btn-primary" style={{ marginBottom: '10px', width: '100%' }}>
-              View Details
-            </button>
-            {project.githubUrl && (
-              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ display: 'block', textAlign: 'center' }}>
-                <FaGithub /> GitHub
-              </a>
-            )}
-          </div>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: '18px',
+            paddingTop: '16px',
+            borderTop: '1px solid var(--border)',
+          }}
+        >
+          <button
+            onClick={(e) => { e.stopPropagation(); handleViewDetails(); }}
+            className="mono"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--accent-blue)',
+              fontSize: '0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: 0,
+            }}
+          >
+            View project <FaArrowRight size={11} />
+          </button>
+
+          {project.githubUrl && (
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              aria-label="View source on GitHub"
+              style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}
+            >
+              <FaGithub />
+            </a>
+          )}
         </div>
       </div>
     </div>

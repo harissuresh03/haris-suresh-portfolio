@@ -12,15 +12,16 @@ const Projects = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="section-title">My <span className="glow-text">Projects</span></h1>
-          <p style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto 50px', color: 'var(--text-secondary)' }}>
-            Explore my portfolio of web and mobile applications, showcasing my skills in full-stack development, 
+          <p className="section-eyebrow">portfolio</p>
+          <h1 className="section-title">My <span className="glow-text">projects</span></h1>
+          <p className="section-subtitle" style={{ maxWidth: '700px' }}>
+            A collection of web and mobile applications showcasing full-stack development,
             UI/UX design, and problem-solving.
           </p>
         </motion.div>
 
         <div className="grid-3">
-          {projects.map((project, index) => (
+          {projects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
         </div>

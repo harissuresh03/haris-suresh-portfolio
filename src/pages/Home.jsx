@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { FaFigma, FaPalette, FaCode } from 'react-icons/fa';
+import { FaFigma, FaCode, FaMobileAlt } from 'react-icons/fa';
 import ProjectCard from '../components/ProjectCard';
 import { projects } from '../data/projectsData';
-import profilePic from '../assets/images/profile.png';
+import profilePic from '../assets/images/profile.jpg';
 import utemLogo from '../assets/images/education/utem-logo.png';
 import ktjLogo from '../assets/images/education/ktepj-logo.png';
 import smkLogo from '../assets/images/education/samad-logo.png';
@@ -13,7 +13,6 @@ const Home = () => {
   // Refs for magnetic buttons
   const connectBtnRef = useRef(null);
   const resumeBtnRef = useRef(null);
-  const viewDetailsBtnRef = useRef(null);
   const viewAllBtnRef = useRef(null);
   const contactBtnRef = useRef(null);
 
@@ -36,35 +35,34 @@ const Home = () => {
 
   const services = [
     {
-      icon: <FaFigma size={40} />,
+      icon: <FaFigma size={32} />,
       title: 'UI/UX Design',
       description: 'Creating beautiful, intuitive and user-centered designs that enhance user experience.'
     },
     {
-      icon: <FaPalette size={40} />,
-      title: 'Graphic Design',
-      description: 'Professional graphic design including branding, social media graphics, and visual content.'
+      icon: <FaMobileAlt size={32} />,
+      title: 'Mobile Development',
+      description: 'Building cross-platform mobile applications with Flutter and Firebase, from real-time features to seamless user experiences.'
     },
     {
-      icon: <FaCode size={40} />,
+      icon: <FaCode size={32} />,
       title: 'Web Development',
       description: 'Building responsive, high-performance web applications using modern frameworks.'
     }
   ];
 
-  // Skills organized by category without scores
   const skillCategories = [
     {
-      title: 'Languages',
-      skills: ['Java', 'JavaScript', 'SQL', 'C++', 'HTML5', 'CSS3']
-    },
-    {
-      title: 'Frameworks & Technologies',
-      skills: ['React.js', 'Node.js', 'Express.js']
+      title: 'Technical Skills',
+      skills: ['Java', 'JavaScript', 'SQL', 'C++', 'HTML5', 'CSS3', 'React.js', 'Node.js', 'Express.js']
     },
     {
       title: 'Tools & Software',
       skills: ['Git', 'VS Code', 'GitHub', 'Android Studio', 'Adobe Animate', 'Canva', 'Microsoft Office']
+    },
+    {
+      title: 'Spoken Languages',
+      skills: ['English (Fluent)', 'Malay (Fluent)', 'Tamil (Native)']
     }
   ];
 
@@ -96,32 +94,36 @@ const Home = () => {
     { name: 'Oracle Certified Foundations Associate', issuer: 'Oracle', date: '2026', badge: badge }
   ];
 
-  const experiences = [
+  const leadershipWork = [
     {
+      id: 1,
       title: 'Media & Publicity Team Lead',
       organization: 'Developer Student Club UTeM',
       period: '2023 - Present',
-      description: 'Managed club social media strategy, content publishing, analytics, and cross-team media initiatives while leading collaborative tech event promotions.'
+      description: 'Managed club social media strategy, content publishing, analytics, and cross-team media initiatives while leading collaborative tech event promotions.',
+      type: 'Student Leadership'
     },
     {
+      id: 2,
       title: 'Media Lead',
       organization: 'Student Representative Council KTEPJ',
       period: '2021 - 2023',
-      description: 'Managed college social media platforms by creating multimedia event content, coordinating live coverage, and engaging with the online student community across Instagram, Facebook, and TikTok.'
+      description: 'Managed college social media platforms by creating multimedia event content, coordinating live coverage, and engaging with the online student community across Instagram, Facebook, and TikTok.',
+      type: 'Student Leadership'
     }
   ];
 
   return (
     <>
       {/* Hero Section */}
-      <section id="about" style={{ paddingTop: '120px', minHeight: '90vh', display: 'flex', alignItems: 'center' }}>
+      <section id="about" style={{ paddingTop: '130px', minHeight: '90vh', display: 'flex', alignItems: 'center' }}>
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="grid-2"
-            style={{ alignItems: 'center', gap: '50px' }}
+            style={{ alignItems: 'center', gap: '60px' }}
           >
             <div>
               <motion.div
@@ -129,98 +131,87 @@ const Home = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                {/* Available to work badge - unclickable but hoverable */}
-                <div 
-                  className="pulse-animation"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    background: 'linear-gradient(135deg, rgba(0, 255, 0, 0.15), rgba(0, 200, 0, 0.05))',
-                    border: '1px solid rgba(0, 255, 0, 0.5)',
-                    borderRadius: '50px',
-                    padding: '6px 16px',
-                    marginBottom: '20px',
-                    cursor: 'default',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 255, 0, 0.3)';
-                    e.currentTarget.style.borderColor = 'rgba(0, 255, 0, 0.8)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.boxShadow = 'none';
-                    e.currentTarget.style.borderColor = 'rgba(0, 255, 0, 0.5)';
-                  }}
-                >
-                  <span style={{
-                    width: '8px',
-                    height: '8px',
-                    background: '#00ff00',
-                    borderRadius: '50%',
-                    display: 'inline-block',
-                    animation: 'pulse 1.5s ease-in-out infinite'
-                  }}></span>
-                  <span style={{ color: '#00ff00', fontSize: '0.85rem', fontWeight: '500' }}>
-                    Available for work
-                  </span>
+                {/* Available to work badge */}
+                <div className="status-pill">
+                  <span className="dot"></span>
+                  <span>status --available-for-hire</span>
                 </div>
-                
-                <p style={{ color: 'var(--accent-pink)', marginBottom: '10px', fontWeight: '500' }}>Welcome to my portfolio</p>
-                <h1 style={{ fontSize: '4rem', fontWeight: '700', marginBottom: '20px', lineHeight: '1.2' }}>
-                  I'm <span className="glow-text">Haris Suresh</span>
+
+                <p className="mono" style={{ color: 'var(--accent-blue)', marginBottom: '12px', fontSize: '0.95rem' }}>
+                  Hi, my name is
+                </p>
+                <h1 style={{ fontSize: '3.2rem', fontWeight: '700', marginBottom: '16px', lineHeight: '1.15' }}>
+                  Haris Suresh
                 </h1>
-                <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', marginBottom: '30px' }}>
-                  Computer Science Student | Software Developer 
+                <h2 style={{ fontSize: '1.5rem', color: 'var(--text-secondary)', marginBottom: '24px', fontWeight: 500 }}>
+                  Computer Science Student &amp; Software Developer
+                </h2>
+                <p style={{ marginBottom: '32px', color: 'var(--text-secondary)', maxWidth: '520px', fontFamily: 'var(--font-sans)' }}>
+                  A dedicated individual with a solid academic background in computer science,
+                  complemented by practical experience in software development and technical projects.
+                  I build with Java, JavaScript, React, Node.js and SQL, and enjoy working
+                  collaboratively on teams to ship things that work.
                 </p>
-                <p style={{ marginBottom: '30px', color: 'var(--text-secondary)' }}>
-                  A dedicated individual with a solid academic background in computer science, 
-                  complemented by practical experience in software development and technical projects. I have a deep passion for technology, problem-solving, and continuous learning. Throughout my academic journey, I have developed solid technical skills in programming languages such as Java, C++, JavaScript, HTML5, CSS3, and SQL. I also enjoy working collaboratively in teams and contributing creative ideas to projects and events.
-                </p>
-                
+
                 {/* Magnetic Buttons */}
-                <div style={{ display: 'flex', gap: '20px' }}>
-                  <a 
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  <a
                     ref={connectBtnRef}
-                    href="https://www.linkedin.com/in/haris-suresh-3b1693360/" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                    href="https://www.linkedin.com/in/haris-suresh-3b1693360/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="btn-primary magnetic-btn"
-                    style={{ display: 'inline-block', transition: 'transform 0.2s ease-out' }}
+                    style={{ display: 'inline-block' }}
                     onMouseMove={(e) => handleMagneticMove(e, connectBtnRef)}
                     onMouseLeave={() => handleMagneticLeave(connectBtnRef)}
                   >
-                    Connect with Me 
+                    Connect with me
                   </a>
-                  <a 
+                  <a
                     ref={resumeBtnRef}
-                    href="/Haris_Suresh_Resume.pdf" 
-                    download 
+                    href="/Haris_Suresh_Resume.pdf"
+                    download
                     className="btn-secondary magnetic-btn"
-                    style={{ display: 'inline-block', transition: 'transform 0.2s ease-out' }}
+                    style={{ display: 'inline-block' }}
                     onMouseMove={(e) => handleMagneticMove(e, resumeBtnRef)}
                     onMouseLeave={() => handleMagneticLeave(resumeBtnRef)}
                   >
-                    View Resume
+                    View resume
                   </a>
                 </div>
               </motion.div>
             </div>
-            
+
+            {/* Signature element: code editor window */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 }}
-              className="profile-image-container"
+              transition={{ delay: 0.3, duration: 0.6 }}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}
             >
-              <div className="profile-image-glow"></div>
-              <img 
-                src={profilePic}
-                alt="Haris Suresh"
-                className="profile-image"
-              />
+              <div className="editor-window">
+                <div className="editor-titlebar">
+                  <span className="editor-dot" style={{ background: '#f07178' }}></span>
+                  <span className="editor-dot" style={{ background: '#f2a65a' }}></span>
+                  <span className="editor-dot" style={{ background: '#8bd49c' }}></span>
+                  <span className="editor-tab">profile.js</span>
+                </div>
+                <div className="editor-body">
+                  <div className="editor-line"><span className="editor-lineno">1</span><span><span className="tok-kw">const</span> <span className="tok-fn">developer</span> <span className="tok-punc">=</span> <span className="tok-punc">{'{'}</span></span></div>
+                  <div className="editor-line"><span className="editor-lineno">2</span><span>&nbsp;&nbsp;name<span className="tok-punc">:</span> <span className="tok-str">'Haris Suresh'</span><span className="tok-punc">,</span></span></div>
+                  <div className="editor-line"><span className="editor-lineno">3</span><span>&nbsp;&nbsp;role<span className="tok-punc">:</span> <span className="tok-str">'Software Developer'</span><span className="tok-punc">,</span></span></div>
+                  <div className="editor-line"><span className="editor-lineno">4</span><span>&nbsp;&nbsp;stack<span className="tok-punc">:</span> <span className="tok-punc">[</span><span className="tok-str">'React'</span><span className="tok-punc">,</span> <span className="tok-str">'Node'</span><span className="tok-punc">,</span> <span className="tok-str">'MySQL'</span><span className="tok-punc">],</span></span></div>
+                  <div className="editor-line"><span className="editor-lineno">5</span><span>&nbsp;&nbsp;location<span className="tok-punc">:</span> <span className="tok-str">'Petaling Jaya, MY'</span><span className="tok-punc">,</span></span></div>
+                  <div className="editor-line"><span className="editor-lineno">6</span><span>&nbsp;&nbsp;cgpa<span className="tok-punc">:</span> <span className="tok-const">3.93</span></span></div>
+                  <div className="editor-line"><span className="editor-lineno">7</span><span><span className="tok-punc">{'}'}</span><span className="tok-punc">;</span><span className="editor-cursor"></span></span></div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <div className="profile-image-container">
+                  <img src={profilePic} alt="Haris Suresh" className="profile-image" />
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         </div>
@@ -235,10 +226,11 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 className="section-title">What I <span className="glow-text">Do</span></h2>
-            <p className="section-subtitle">Services I offer to help bring your ideas to life</p>
+            <p className="section-eyebrow">what_i_do</p>
+            <h2 className="section-title">Services I <span className="glow-text">offer</span></h2>
+            <p className="section-subtitle">Helping bring ideas to life, from design to deployment</p>
           </motion.div>
-          
+
           <div className="grid-3">
             {services.map((service, index) => (
               <motion.div
@@ -248,16 +240,15 @@ const Home = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
                 className="card glow-on-hover"
-                style={{ textAlign: 'center' }}
               >
-                <div style={{ color: 'var(--accent-pink)', marginBottom: '40px' }}>{service.icon}</div>
-                <h3 style={{ marginBottom: '15px' }}>{service.title}</h3>
-                <p style={{ color: 'var(--text-secondary)' }}>{service.description}</p>
+                <div style={{ color: 'var(--accent-blue)', marginBottom: '20px' }}>{service.icon}</div>
+                <h3 style={{ marginBottom: '12px', fontSize: '1.1rem' }}>{service.title}</h3>
+                <p style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-sans)' }}>{service.description}</p>
               </motion.div>
             ))}
           </div>
 
-          {/* Skills Section - Card with unclickable buttons */}
+          {/* Skills Section */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -265,12 +256,13 @@ const Home = () => {
             viewport={{ once: true }}
             style={{ marginTop: '80px' }}
           >
-            <h3 style={{ textAlign: 'center', marginBottom: '40px', fontSize: '2rem' }}>My <span className="glow-text">Skills</span></h3>
+            <p className="section-eyebrow" style={{ textAlign: 'center', justifyContent: 'center', display: 'flex' }}>skills_and_tools</p>
+            <h3 style={{ textAlign: 'center', marginBottom: '40px', fontSize: '1.7rem' }}>Skills &amp; abilities</h3>
             <div className="grid-3">
               {skillCategories.map((category, idx) => (
                 <div key={idx} className="card glow-on-hover">
-                  <h4 style={{ marginBottom: '20px', color: 'var(--accent-cyan)' }}>{category.title}</h4>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                  <h4 style={{ marginBottom: '18px', color: 'var(--accent-violet)', fontSize: '0.95rem' }}>{category.title}</h4>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                     {category.skills.map((skill, i) => (
                       <span key={i} className="skill-badge">
                         {skill}
@@ -293,11 +285,12 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 className="section-title">Academic <span className="glow-text">Background</span></h2>
+            <p className="section-eyebrow">education</p>
+            <h2 className="section-title">Academic <span className="glow-text">background</span></h2>
             <p className="section-subtitle">My academic journey and professional credentials</p>
           </motion.div>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {education.map((edu, index) => (
               <motion.div
                 key={index}
@@ -308,43 +301,36 @@ const Home = () => {
                 className="card glow-on-hover"
                 style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}
               >
-                <img src={edu.logo} alt={edu.school} style={{ width: '80px', height: '80px', borderRadius: '10px' }} />
+                <img src={edu.logo} alt={edu.school} style={{ width: '64px', height: '64px', borderRadius: '10px', border: '1px solid var(--border)' }} />
                 <div style={{ flex: 1 }}>
-                  <h3>{edu.school}</h3>
-                  <p style={{ color: 'var(--accent-pink)', marginBottom: '5px' }}>{edu.degree}</p>
-                  <p style={{ color: 'var(--text-secondary)' }}>{edu.period} | {edu.cgpa}</p>
+                  <h3 style={{ fontSize: '1rem' }}>{edu.school}</h3>
+                  <p style={{ color: 'var(--accent-blue)', marginBottom: '4px', fontFamily: 'var(--font-sans)' }}>{edu.degree}</p>
+                  <p className="mono" style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{edu.period} · {edu.cgpa}</p>
                 </div>
               </motion.div>
             ))}
           </div>
 
-          {/* Certifications with badges - Card style */}
+          {/* Certifications */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            style={{ marginTop: '80px' }}
+            style={{ marginTop: '70px' }}
           >
-            <h3 style={{ marginBottom: '30px', fontSize: '1.8rem' }}>Certifications & <span className="glow-text">Badges</span></h3>
+            <h3 style={{ marginBottom: '25px', fontSize: '1.4rem' }}>Certifications &amp; <span className="glow-text">badges</span></h3>
             <div className="grid-2">
               {certifications.map((cert, index) => (
                 <div key={index} className="card glow-on-hover" style={{ padding: '30px', textAlign: 'center' }}>
-                  <div style={{ marginBottom: '20px' }}>
-                    <img 
-                      src={cert.badge} 
-                      alt={cert.name}
-                      style={{ 
-                        width: '300px',
-                        height: '200px',
-                        objectFit: 'contain',
-                        marginBottom: '20px'
-                      }}
-                    />
-                  </div>
-                  <h4 style={{ marginBottom: '10px', fontSize: '1.3rem', color: 'var(--accent-pink)' }}>{cert.name}</h4>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '1rem' }}>{cert.issuer}</p>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Earned: {cert.date}</p>
+                  <img
+                    src={cert.badge}
+                    alt={cert.name}
+                    style={{ width: '260px', height: '170px', objectFit: 'contain', marginBottom: '18px' }}
+                  />
+                  <h4 style={{ marginBottom: '8px', fontSize: '1.05rem', color: 'var(--accent-blue)' }}>{cert.name}</h4>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', fontFamily: 'var(--font-sans)' }}>{cert.issuer}</p>
+                  <p className="mono" style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Earned: {cert.date}</p>
                 </div>
               ))}
             </div>
@@ -352,8 +338,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Experience Section */}
-      <section id="experience" style={{ marginTop: '80px' }}>
+      {/* Leadership & Work Section */}
+      <section id="leadership-work">
         <div className="container">
           <motion.div
             initial={{ opacity: 0 }}
@@ -361,12 +347,12 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 className="section-title">My <span className="glow-text">Journey</span></h2>
-            <p className="section-subtitle">Professional journey and leadership roles</p>
+            <p className="section-eyebrow">experience</p>
+            <h2 className="section-title" style={{ marginBottom: '30px' }}>Leadership &amp; <span className="glow-text">work</span></h2>
           </motion.div>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
-            {experiences.map((exp, index) => (
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+            {leadershipWork.map((item, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
@@ -374,33 +360,21 @@ const Home = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
                 className="card glow-on-hover"
-                style={{ padding: '25px' }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginBottom: '10px' }}>
-                  <h3>{exp.title}</h3>
-                  <p style={{ color: 'var(--accent-pink)' }}>{exp.period}</p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginBottom: '8px', gap: '8px' }}>
+                  <div>
+                    <h3 style={{ marginBottom: '4px', fontSize: '1.05rem' }}>{item.title}</h3>
+                    <p style={{ color: 'var(--accent-violet)', fontWeight: '500', fontSize: '0.9rem', fontFamily: 'var(--font-sans)' }}>{item.organization}</p>
+                  </div>
+                  <p className="mono" style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{item.period}</p>
                 </div>
-                <p style={{ marginBottom: '8px', fontWeight: '500' }}>{exp.organization}</p>
-                <p style={{ color: 'var(--text-secondary)', marginBottom: 0 }}>{exp.description}</p>
+                <p style={{ color: 'var(--text-secondary)', marginBottom: 0, fontFamily: 'var(--font-sans)' }}>{item.description}</p>
               </motion.div>
             ))}
           </div>
-
-          <div style={{ textAlign: 'center', marginTop: '40px' }}>
-            <a 
-              ref={viewDetailsBtnRef}
-              href="/experience" 
-              className="btn-primary magnetic-btn"
-              style={{ display: 'inline-block', transition: 'transform 0.2s ease-out' }}
-              onMouseMove={(e) => handleMagneticMove(e, viewDetailsBtnRef)}
-              onMouseLeave={() => handleMagneticLeave(viewDetailsBtnRef)}
-            >
-              View More Details →
-            </a>
-          </div>
         </div>
       </section>
-      
+
       {/* Projects Section */}
       <section id="projects-section">
         <div className="container">
@@ -410,10 +384,11 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 className="section-title">Featured <span className="glow-text">Projects</span></h2>
+            <p className="section-eyebrow">selected_work</p>
+            <h2 className="section-title">Featured <span className="glow-text">projects</span></h2>
             <p className="section-subtitle">Some of my best work and creative endeavors</p>
           </motion.div>
-          
+
           <div className="grid-3">
             {projects.slice(0, 3).map((project, index) => (
               <ProjectCard key={index} project={project} />
@@ -421,35 +396,36 @@ const Home = () => {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '40px' }}>
-            <a 
+            <a
               ref={viewAllBtnRef}
-              href="/projects" 
+              href="/projects"
               className="btn-primary magnetic-btn"
-              style={{ display: 'inline-block', transition: 'transform 0.2s ease-out' }}
+              style={{ display: 'inline-block' }}
               onMouseMove={(e) => handleMagneticMove(e, viewAllBtnRef)}
               onMouseLeave={() => handleMagneticLeave(viewAllBtnRef)}
             >
-              View All Projects →
+              View all projects →
             </a>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" style={{ padding: '150px 0' }}>
+      <section id="contact" style={{ padding: '120px 0' }}>
         <div className="container">
           <div style={{ textAlign: 'center' }}>
-            <h2 className="section-title">Let's <span className="glow-text">Connect</span></h2>
-            <p className="section-subtitle">Have a project in mind? Let's work together!</p>
-            <a 
+            <p className="section-eyebrow" style={{ justifyContent: 'center', display: 'flex' }}>get_in_touch</p>
+            <h2 className="section-title">Let's <span className="glow-text">connect</span></h2>
+            <p className="section-subtitle">Have a project in mind? Let's work together.</p>
+            <a
               ref={contactBtnRef}
-              href="/contact" 
+              href="/contact"
               className="btn-primary magnetic-btn"
-              style={{ marginTop: '30px', display: 'inline-block', transition: 'transform 0.2s ease-out' }}
+              style={{ marginTop: '20px', display: 'inline-block' }}
               onMouseMove={(e) => handleMagneticMove(e, contactBtnRef)}
               onMouseLeave={() => handleMagneticLeave(contactBtnRef)}
             >
-              Go to Contact Page →
+              Go to contact page →
             </a>
           </div>
         </div>

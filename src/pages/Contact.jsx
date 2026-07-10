@@ -3,6 +3,30 @@ import { motion } from 'framer-motion';
 import { FaEnvelope, FaPhone, FaMapMarker, FaGithub, FaLinkedin } from 'react-icons/fa';
 import emailjs from '@emailjs/browser';
 
+const iconCircleStyle = {
+  width: '46px',
+  height: '46px',
+  background: 'var(--bg-elevated)',
+  border: '1px solid var(--border)',
+  borderRadius: '10px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '1.3rem',
+  color: 'var(--accent-blue)',
+};
+
+const inputStyle = {
+  width: '100%',
+  padding: '12px 14px',
+  background: 'var(--bg-elevated)',
+  border: '1px solid var(--border)',
+  borderRadius: '8px',
+  color: 'var(--text-primary)',
+  fontSize: '0.95rem',
+  fontFamily: 'var(--font-sans)',
+};
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -18,7 +42,7 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('sending');
-    
+
     try {
       const result = await emailjs.send(
         'service_md461n6',
@@ -30,7 +54,7 @@ const Contact = () => {
         },
         'ukNzVG3w3o-RXeYHU'
       );
-      
+
       if (result.text === 'OK') {
         setStatus('success');
         setFormData({ name: '', email: '', message: '' });
@@ -56,75 +80,44 @@ const Contact = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="section-title">Get In <span className="glow-text">Touch</span> </h1> 
-          <p style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 50px', opacity: 0.9 }}>
+          <p className="section-eyebrow" style={{ justifyContent: 'center', display: 'flex' }}>contact_form</p>
+          <h1 className="section-title" style={{ textAlign: 'center' }}>Get in <span className="glow-text">touch</span></h1>
+          <p style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 50px', color: 'var(--text-secondary)' }}>
             Have a project in mind? I'd love to hear about it. Feel free to reach out for collaborations or just a friendly chat.
           </p>
 
-          <div className="grid-2" style={{ gap: '50px' }}>
+          <div className="grid-2" style={{ gap: '30px' }}>
             {/* Contact Info */}
             <div>
-              <div className="card" style={{ padding: '40px' }}>
-                <h2 style={{ marginBottom: '30px' }}>Let's Connect</h2>
-                
-                <div style={{ marginBottom: '30px' }}>
+              <div className="card" style={{ padding: '36px' }}>
+                <h2 style={{ marginBottom: '26px', fontSize: '1.2rem' }}>Let's connect</h2>
+
+                <div style={{ marginBottom: '26px' }}>
                   {contactInfo.map((info, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '25px' }}>
-                      <div style={{ 
-                        width: '50px', 
-                        height: '50px', 
-                        background: 'rgba(255, 45, 117, 0.2)', 
-                        borderRadius: '50%', 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'center',
-                        fontSize: '1.5rem',
-                        color: 'var(--accent-pink)'
-                      }}>
+                    <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '22px' }}>
+                      <div style={iconCircleStyle}>
                         {info.icon}
                       </div>
                       <div>
-                        <h4 style={{ marginBottom: '5px' }}>{info.label}</h4>
+                        <p className="mono" style={{ marginBottom: '3px', color: 'var(--text-tertiary)', fontSize: '0.75rem', textTransform: 'uppercase' }}>{info.label}</p>
                         {info.link ? (
-                          <a href={info.link} style={{ color: '#fff', textDecoration: 'none', opacity: 0.8 }}>
+                          <a href={info.link} style={{ color: 'var(--text-primary)', textDecoration: 'none' }}>
                             {info.value}
                           </a>
                         ) : (
-                          <p style={{ opacity: 0.8 }}>{info.value}</p>
+                          <p style={{ color: 'var(--text-primary)' }}>{info.value}</p>
                         )}
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <h3 style={{ marginBottom: '15px' }}>Follow Me</h3>
-                <div style={{ display: 'flex', gap: '15px' }}>
-                  <a href="https://github.com/harissuresh03" target="_blank" rel="noopener noreferrer" style={{ 
-                    width: '45px', 
-                    height: '45px', 
-                    background: 'rgba(255, 45, 117, 0.2)', 
-                    borderRadius: '50%', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                    fontSize: '1.3rem',
-                    color: '#fff',
-                    transition: 'all 0.3s ease'
-                  }}>
+                <h3 style={{ marginBottom: '14px', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>Follow me</h3>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <a href="https://github.com/harissuresh03" target="_blank" rel="noopener noreferrer" style={iconCircleStyle}>
                     <FaGithub />
                   </a>
-                  <a href="https://www.linkedin.com/in/haris-suresh-3b1693360/" target="_blank" rel="noopener noreferrer" style={{ 
-                    width: '45px', 
-                    height: '45px', 
-                    background: 'rgba(255, 45, 117, 0.2)', 
-                    borderRadius: '50%', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                    fontSize: '1.3rem',
-                    color: '#fff',
-                    transition: 'all 0.3s ease'
-                  }}>
+                  <a href="https://www.linkedin.com/in/haris-suresh-3b1693360/" target="_blank" rel="noopener noreferrer" style={iconCircleStyle}>
                     <FaLinkedin />
                   </a>
                 </div>
@@ -133,13 +126,13 @@ const Contact = () => {
 
             {/* Contact Form */}
             <div>
-              <div className="card" style={{ padding: '40px' }}>
-                <h2 style={{ marginBottom: '30px' }}>Send me a message</h2>
-                
+              <div className="card" style={{ padding: '36px' }}>
+                <h2 style={{ marginBottom: '26px', fontSize: '1.2rem' }}>Send me a message</h2>
+
                 <form onSubmit={handleSubmit}>
-                  <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="name" style={{ display: 'block', marginBottom: '10px', fontWeight: '500' }}>
-                      Your Name *
+                  <div style={{ marginBottom: '18px' }}>
+                    <label htmlFor="name" className="mono" style={{ display: 'block', marginBottom: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                      name *
                     </label>
                     <input
                       type="text"
@@ -148,21 +141,13 @@ const Contact = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      style={{
-                        width: '100%',
-                        padding: '12px',
-                        background: 'rgba(255,255,255,0.1)',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        borderRadius: '8px',
-                        color: '#fff',
-                        fontSize: '1rem'
-                      }}
+                      style={inputStyle}
                     />
                   </div>
 
-                  <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="email" style={{ display: 'block', marginBottom: '10px', fontWeight: '500' }}>
-                      Your Email *
+                  <div style={{ marginBottom: '18px' }}>
+                    <label htmlFor="email" className="mono" style={{ display: 'block', marginBottom: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                      email *
                     </label>
                     <input
                       type="email"
@@ -171,21 +156,13 @@ const Contact = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      style={{
-                        width: '100%',
-                        padding: '12px',
-                        background: 'rgba(255,255,255,0.1)',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        borderRadius: '8px',
-                        color: '#fff',
-                        fontSize: '1rem'
-                      }}
+                      style={inputStyle}
                     />
                   </div>
 
-                  <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="message" style={{ display: 'block', marginBottom: '10px', fontWeight: '500' }}>
-                      Message *
+                  <div style={{ marginBottom: '18px' }}>
+                    <label htmlFor="message" className="mono" style={{ display: 'block', marginBottom: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                      message *
                     </label>
                     <textarea
                       id="message"
@@ -194,32 +171,23 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       rows="5"
-                      style={{
-                        width: '100%',
-                        padding: '12px',
-                        background: 'rgba(255,255,255,0.1)',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        borderRadius: '8px',
-                        color: '#fff',
-                        fontSize: '1rem',
-                        resize: 'vertical'
-                      }}
+                      style={{ ...inputStyle, resize: 'vertical' }}
                     />
                   </div>
 
                   <button type="submit" className="btn-primary" style={{ width: '100%' }} disabled={status === 'sending'}>
-                    {status === 'sending' ? 'Sending...' : 'Send Message'}
+                    {status === 'sending' ? 'Sending...' : 'Send message'}
                   </button>
 
                   {status === 'success' && (
-                    <p style={{ marginTop: '15px', color: '#4caf50', textAlign: 'center' }}>
-                      Message sent successfully! I'll get back to you soon.
+                    <p className="mono" style={{ marginTop: '15px', color: 'var(--accent-green)', textAlign: 'center', fontSize: '0.85rem' }}>
+                      ✓ Message sent — I'll get back to you soon.
                     </p>
                   )}
-                  
+
                   {status === 'error' && (
-                    <p style={{ marginTop: '15px', color: '#f44336', textAlign: 'center' }}>
-                      Failed to send message. Please try again or contact me directly via email.
+                    <p className="mono" style={{ marginTop: '15px', color: 'var(--accent-red)', textAlign: 'center', fontSize: '0.85rem' }}>
+                      ✗ Failed to send. Please email me directly.
                     </p>
                   )}
                 </form>
