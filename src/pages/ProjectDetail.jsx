@@ -70,7 +70,7 @@ const ProjectDetail = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxOpen, nextImage, prevImage]);
+  }, [lightboxOpen, nextImage, prevImage, images.length]);
 
   // Reset the showcase whenever a different project is opened
   useEffect(() => {
