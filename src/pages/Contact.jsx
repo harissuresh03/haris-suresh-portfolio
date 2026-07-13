@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FaEnvelope, FaPhone, FaMapMarker, FaGithub, FaLinkedin } from 'react-icons/fa';
 import emailjs from '@emailjs/browser';
+import { fadeUp, fadeLeft, fadeRight, staggerContainer, staggerItem, buttonHover } from '../lib/animations';
 
 const iconCircleStyle = {
   width: '46px',
@@ -75,11 +76,7 @@ const Contact = () => {
   return (
     <section style={{ paddingTop: '120px', minHeight: '80vh' }}>
       <div className="container">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <motion.div variants={fadeUp} initial="hidden" animate="visible">
           <p className="section-eyebrow" style={{ justifyContent: 'center', display: 'flex' }}>contact_form</p>
           <h1 className="section-title" style={{ textAlign: 'center' }}>Get in <span className="glow-text">touch</span></h1>
           <p style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 50px', color: 'var(--text-secondary)' }}>
@@ -88,44 +85,67 @@ const Contact = () => {
 
           <div className="grid-2" style={{ gap: '30px' }}>
             {/* Contact Info */}
-            <div>
+            <motion.div variants={fadeLeft} initial="hidden" animate="visible">
               <div className="card" style={{ padding: '36px' }}>
                 <h2 style={{ marginBottom: '26px', fontSize: '1.2rem' }}>Let's connect</h2>
 
-                <div style={{ marginBottom: '26px' }}>
+                <motion.div
+                  style={{ marginBottom: '26px' }}
+                  variants={staggerContainer(0.08)}
+                  initial="hidden"
+                  animate="visible"
+                >
                   {contactInfo.map((info, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '22px' }}>
+                    <motion.div
+                      key={index}
+                      variants={staggerItem}
+                      style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '22px' }}
+                    >
                       <div style={iconCircleStyle}>
                         {info.icon}
                       </div>
                       <div>
                         <p className="mono" style={{ marginBottom: '3px', color: 'var(--text-tertiary)', fontSize: '0.75rem', textTransform: 'uppercase' }}>{info.label}</p>
                         {info.link ? (
-                          <a href={info.link} style={{ color: 'var(--text-primary)', textDecoration: 'none' }}>
+                          <a href={info.link} className="link-underline" style={{ color: 'var(--text-primary)' }}>
                             {info.value}
                           </a>
                         ) : (
                           <p style={{ color: 'var(--text-primary)' }}>{info.value}</p>
                         )}
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
 
                 <h3 style={{ marginBottom: '14px', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>Follow me</h3>
                 <div style={{ display: 'flex', gap: '12px' }}>
-                  <a href="https://github.com/harissuresh03" target="_blank" rel="noopener noreferrer" style={iconCircleStyle}>
+                  <motion.a
+                    href="https://github.com/harissuresh03"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={iconCircleStyle}
+                    whileHover={{ y: -4, scale: 1.08 }}
+                    whileTap={{ scale: 0.94 }}
+                  >
                     <FaGithub />
-                  </a>
-                  <a href="https://www.linkedin.com/in/haris-suresh-3b1693360/" target="_blank" rel="noopener noreferrer" style={iconCircleStyle}>
+                  </motion.a>
+                  <motion.a
+                    href="https://www.linkedin.com/in/haris-suresh-3b1693360/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={iconCircleStyle}
+                    whileHover={{ y: -4, scale: 1.08 }}
+                    whileTap={{ scale: 0.94 }}
+                  >
                     <FaLinkedin />
-                  </a>
+                  </motion.a>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Contact Form */}
-            <div>
+            <motion.div variants={fadeRight} initial="hidden" animate="visible">
               <div className="card" style={{ padding: '36px' }}>
                 <h2 style={{ marginBottom: '26px', fontSize: '1.2rem' }}>Send me a message</h2>
 
@@ -141,6 +161,7 @@ const Contact = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
+                      className="form-input"
                       style={inputStyle}
                     />
                   </div>
@@ -156,6 +177,7 @@ const Contact = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
+                      className="form-input"
                       style={inputStyle}
                     />
                   </div>
@@ -171,28 +193,56 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       rows="5"
+                      className="form-input"
                       style={{ ...inputStyle, resize: 'vertical' }}
                     />
                   </div>
 
-                  <button type="submit" className="btn-primary" style={{ width: '100%' }} disabled={status === 'sending'}>
+                  <motion.button
+                    type="submit"
+                    className="btn-primary"
+                    style={{ width: '100%' }}
+                    disabled={status === 'sending'}
+                    variants={buttonHover}
+                    initial="rest"
+                    whileHover="hover"
+                    whileTap="tap"
+                  >
                     {status === 'sending' ? 'Sending...' : 'Send message'}
-                  </button>
+                  </motion.button>
 
-                  {status === 'success' && (
-                    <p className="mono" style={{ marginTop: '15px', color: 'var(--accent-green)', textAlign: 'center', fontSize: '0.85rem' }}>
-                      ✓ Message sent — I'll get back to you soon.
-                    </p>
-                  )}
+                  <AnimatePresence mode="wait">
+                    {status === 'success' && (
+                      <motion.p
+                        key="success"
+                        initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.3 }}
+                        className="mono"
+                        style={{ marginTop: '15px', color: 'var(--accent-green)', textAlign: 'center', fontSize: '0.85rem' }}
+                      >
+                        ✓ Message sent — I'll get back to you soon.
+                      </motion.p>
+                    )}
 
-                  {status === 'error' && (
-                    <p className="mono" style={{ marginTop: '15px', color: 'var(--accent-red)', textAlign: 'center', fontSize: '0.85rem' }}>
-                      ✗ Failed to send. Please email me directly.
-                    </p>
-                  )}
+                    {status === 'error' && (
+                      <motion.p
+                        key="error"
+                        initial={{ opacity: 0, y: -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.3 }}
+                        className="mono"
+                        style={{ marginTop: '15px', color: 'var(--accent-red)', textAlign: 'center', fontSize: '0.85rem' }}
+                      >
+                        ✗ Failed to send. Please email me directly.
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </form>
               </div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
       </div>

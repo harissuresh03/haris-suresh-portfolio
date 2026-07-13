@@ -1,38 +1,65 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { FaGithub, FaArrowRight } from 'react-icons/fa';
+import { cardHover, staggerContainer, staggerItem } from '../lib/animations';
 
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, featured = false }) => {
   const navigate = useNavigate();
+  const cardRef = useRef(null);
 
   const handleViewDetails = () => {
     navigate(`/project/${project.id}`);
   };
 
+  // Cursor-following glow: writes the pointer position into CSS vars that
+  // the .card-glow::before radial-gradient in globals.css reads.
+  const handleMouseMove = (e) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+    el.style.setProperty('--my', `${e.clientY - rect.top}px`);
+  };
+
   return (
-    <div
-      className="card project-card glow-on-hover"
+    <motion.div
+      ref={cardRef}
+      className="card project-card glow-on-hover card-glow"
       style={{ padding: 0, overflow: 'hidden', cursor: 'pointer' }}
       onClick={handleViewDetails}
+      onMouseMove={handleMouseMove}
+      variants={cardHover}
+      initial="rest"
+      whileHover="hover"
+      animate="rest"
     >
       <img
         src={project.coverImage || project.image}
         alt={project.title}
         className="project-cover"
+        style={featured ? { height: '340px' } : undefined}
+        loading="lazy"
       />
-      <div style={{ padding: '22px' }}>
-        <h3 style={{ marginBottom: '10px', fontSize: '1.1rem' }}>{project.title}</h3>
+      <div style={{ padding: '22px', position: 'relative', zIndex: 1 }}>
+        <h3 style={{ marginBottom: '10px', fontSize: featured ? '1.35rem' : '1.1rem' }}>{project.title}</h3>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', minHeight: '42px' }}>
-          {project.description.substring(0, 90)}...
+          {project.description.substring(0, featured ? 170 : 90)}...
         </p>
 
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '16px 0' }}>
-          {project.technologies.slice(0, 3).map((tech, i) => (
-            <span key={i} className="skill-badge" style={{ fontSize: '0.72rem' }}>
+        <motion.div
+          style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '16px 0' }}
+          variants={staggerContainer(0.06)}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          {project.technologies.slice(0, featured ? 5 : 3).map((tech, i) => (
+            <motion.span key={i} variants={staggerItem} className="skill-badge" style={{ fontSize: '0.72rem' }}>
               {tech}
-            </span>
+            </motion.span>
           ))}
-        </div>
+        </motion.div>
 
         <div
           style={{
@@ -46,7 +73,7 @@ const ProjectCard = ({ project }) => {
         >
           <button
             onClick={(e) => { e.stopPropagation(); handleViewDetails(); }}
-            className="mono"
+            className="mono link-underline"
             style={{
               background: 'none',
               border: 'none',
@@ -75,7 +102,7 @@ const ProjectCard = ({ project }) => {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

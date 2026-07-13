@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { FaFigma, FaCode, FaMobileAlt } from 'react-icons/fa';
 import ProjectCard from '../components/ProjectCard';
 import { projects } from '../data/projectsData';
@@ -8,6 +8,16 @@ import utemLogo from '../assets/images/education/utem-logo.png';
 import ktjLogo from '../assets/images/education/ktepj-logo.png';
 import smkLogo from '../assets/images/education/samad-logo.png';
 import badge from '../assets/images/badge.jpg';
+import {
+  fadeUp,
+  fadeLeft,
+  fadeRight,
+  scaleIn,
+  staggerContainer,
+  staggerItem,
+  buttonHover,
+  revealProps,
+} from '../lib/animations';
 
 const Home = () => {
   // Refs for magnetic buttons
@@ -15,6 +25,7 @@ const Home = () => {
   const resumeBtnRef = useRef(null);
   const viewAllBtnRef = useRef(null);
   const contactBtnRef = useRef(null);
+  const heroRef = useRef(null);
 
   // Magnetic effect handler
   const handleMagneticMove = (e, ref) => {
@@ -31,6 +42,27 @@ const Home = () => {
   const handleMagneticLeave = (ref) => {
     if (!ref.current) return;
     ref.current.style.transform = 'translate(0px, 0px)';
+  };
+
+  // Very subtle mouse parallax on the hero's editor window — a couple of
+  // degrees of tilt, nothing distracting, and it settles with a spring.
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const springX = useSpring(rawX, { stiffness: 120, damping: 20 });
+  const springY = useSpring(rawY, { stiffness: 120, damping: 20 });
+  const rotateX = useTransform(springY, [-40, 40], [4, -4]);
+  const rotateY = useTransform(springX, [-40, 40], [-4, 4]);
+
+  const handleHeroMouseMove = (e) => {
+    const rect = heroRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    rawX.set(e.clientX - rect.left - rect.width / 2);
+    rawY.set(e.clientY - rect.top - rect.height / 2);
+  };
+
+  const handleHeroMouseLeave = () => {
+    rawX.set(0);
+    rawY.set(0);
   };
 
   const services = [
@@ -116,21 +148,29 @@ const Home = () => {
   return (
     <>
       {/* Hero Section */}
-      <section id="about" style={{ paddingTop: '130px', minHeight: '90vh', display: 'flex', alignItems: 'center' }}>
+      <section
+        id="about"
+        ref={heroRef}
+        onMouseMove={handleHeroMouseMove}
+        onMouseLeave={handleHeroMouseLeave}
+        style={{ position: 'relative', paddingTop: '130px', minHeight: '90vh', display: 'flex', alignItems: 'center' }}
+      >
+        <div className="mesh-bg" aria-hidden="true">
+          <div className="mesh-blob b1" />
+          <div className="mesh-blob b2" />
+          <div className="mesh-blob b3" />
+        </div>
+
         <div className="container">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            variants={staggerContainer(0.15)}
+            initial="hidden"
+            animate="visible"
             className="grid-2"
             style={{ alignItems: 'center', gap: '60px' }}
           >
             <div>
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-              >
+              <motion.div variants={staggerItem}>
                 {/* Available to work badge */}
                 <div className="status-pill">
                   <span className="dot"></span>
@@ -182,14 +222,21 @@ const Home = () => {
               </motion.div>
             </div>
 
-            {/* Signature element: code editor window */}
+            {/* Signature element: code editor window, with subtle parallax tilt */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}
+              variants={staggerItem}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '24px',
+                perspective: 800,
+              }}
             >
-              <div className="editor-window">
+              <motion.div
+                className="editor-window"
+                style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+              >
                 <div className="editor-titlebar">
                   <span className="editor-dot" style={{ background: '#f07178' }}></span>
                   <span className="editor-dot" style={{ background: '#f2a65a' }}></span>
@@ -205,7 +252,7 @@ const Home = () => {
                   <div className="editor-line"><span className="editor-lineno">6</span><span>&nbsp;&nbsp;cgpa<span className="tok-punc">:</span> <span className="tok-const">3.93</span></span></div>
                   <div className="editor-line"><span className="editor-lineno">7</span><span><span className="tok-punc">{'}'}</span><span className="tok-punc">;</span><span className="editor-cursor"></span></span></div>
                 </div>
-              </div>
+              </motion.div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <div className="profile-image-container">
@@ -220,58 +267,46 @@ const Home = () => {
       {/* Services Section */}
       <section>
         <div className="container">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps}>
             <p className="section-eyebrow">what_i_do</p>
             <h2 className="section-title">Services I <span className="glow-text">offer</span></h2>
             <p className="section-subtitle">Helping bring ideas to life, from design to deployment</p>
           </motion.div>
 
-          <div className="grid-3">
+          <motion.div className="grid-3" variants={staggerContainer(0.1)} {...revealProps}>
             {services.map((service, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="card glow-on-hover"
-              >
+              <motion.div key={index} variants={staggerItem} whileHover={{ y: -6 }} className="card glow-on-hover">
                 <div style={{ color: 'var(--accent-blue)', marginBottom: '20px' }}>{service.icon}</div>
                 <h3 style={{ marginBottom: '12px', fontSize: '1.1rem' }}>{service.title}</h3>
                 <p style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-sans)' }}>{service.description}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Skills Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            viewport={{ once: true }}
-            style={{ marginTop: '80px' }}
-          >
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps} style={{ marginTop: '80px' }}>
             <p className="section-eyebrow" style={{ textAlign: 'center', justifyContent: 'center', display: 'flex' }}>skills_and_tools</p>
             <h3 style={{ textAlign: 'center', marginBottom: '40px', fontSize: '1.7rem' }}>Skills &amp; abilities</h3>
-            <div className="grid-3">
+            <motion.div className="grid-3" variants={staggerContainer(0.1)} {...revealProps}>
               {skillCategories.map((category, idx) => (
-                <div key={idx} className="card glow-on-hover">
+                <motion.div key={idx} variants={staggerItem} whileHover={{ y: -6 }} className="card glow-on-hover">
                   <h4 style={{ marginBottom: '18px', color: 'var(--accent-violet)', fontSize: '0.95rem' }}>{category.title}</h4>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                  <motion.div
+                    style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}
+                    variants={staggerContainer(0.04)}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                  >
                     {category.skills.map((skill, i) => (
-                      <span key={i} className="skill-badge">
+                      <motion.span key={i} variants={staggerItem} className="skill-badge">
                         {skill}
-                      </span>
+                      </motion.span>
                     ))}
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -279,29 +314,26 @@ const Home = () => {
       {/* Academic Background Section */}
       <section id="academic">
         <div className="container">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps}>
             <p className="section-eyebrow">education</p>
             <h2 className="section-title">Academic <span className="glow-text">background</span></h2>
             <p className="section-subtitle">My academic journey and professional credentials</p>
           </motion.div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <motion.div
+            style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+            variants={staggerContainer(0.12)}
+            {...revealProps}
+          >
             {education.map((edu, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                variants={fadeLeft}
+                whileHover={{ y: -4 }}
                 className="card glow-on-hover"
                 style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}
               >
-                <img src={edu.logo} alt={edu.school} style={{ width: '64px', height: '64px', borderRadius: '10px', border: '1px solid var(--border)' }} />
+                <img src={edu.logo} alt={edu.school} loading="lazy" style={{ width: '64px', height: '64px', borderRadius: '10px', border: '1px solid var(--border)' }} />
                 <div style={{ flex: 1 }}>
                   <h3 style={{ fontSize: '1rem' }}>{edu.school}</h3>
                   <p style={{ color: 'var(--accent-blue)', marginBottom: '4px', fontFamily: 'var(--font-sans)' }}>{edu.degree}</p>
@@ -309,29 +341,33 @@ const Home = () => {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Certifications */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            style={{ marginTop: '70px' }}
-          >
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps} style={{ marginTop: '70px' }}>
             <h3 style={{ marginBottom: '25px', fontSize: '1.4rem' }}>Certifications &amp; <span className="glow-text">badges</span></h3>
             <div className="grid-2">
               {certifications.map((cert, index) => (
-                <div key={index} className="card glow-on-hover" style={{ padding: '30px', textAlign: 'center' }}>
+                <motion.div
+                  key={index}
+                  variants={scaleIn}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  whileHover={{ y: -6 }}
+                  className="card glow-on-hover"
+                  style={{ padding: '30px', textAlign: 'center' }}
+                >
                   <img
                     src={cert.badge}
                     alt={cert.name}
+                    loading="lazy"
                     style={{ width: '260px', height: '170px', objectFit: 'contain', marginBottom: '18px' }}
                   />
                   <h4 style={{ marginBottom: '8px', fontSize: '1.05rem', color: 'var(--accent-blue)' }}>{cert.name}</h4>
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', fontFamily: 'var(--font-sans)' }}>{cert.issuer}</p>
                   <p className="mono" style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>Earned: {cert.date}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </motion.div>
@@ -341,26 +377,18 @@ const Home = () => {
       {/* Leadership & Work Section */}
       <section id="leadership-work">
         <div className="container">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps}>
             <p className="section-eyebrow">experience</p>
             <h2 className="section-title" style={{ marginBottom: '30px' }}>Leadership &amp; <span className="glow-text">work</span></h2>
           </motion.div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <motion.div
+            style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}
+            variants={staggerContainer(0.12)}
+            {...revealProps}
+          >
             {leadershipWork.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="card glow-on-hover"
-              >
+              <motion.div key={index} variants={fadeUp} whileHover={{ y: -4 }} className="card glow-on-hover">
                 <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', marginBottom: '8px', gap: '8px' }}>
                   <div>
                     <h3 style={{ marginBottom: '4px', fontSize: '1.05rem' }}>{item.title}</h3>
@@ -371,29 +399,26 @@ const Home = () => {
                 <p style={{ color: 'var(--text-secondary)', marginBottom: 0, fontFamily: 'var(--font-sans)' }}>{item.description}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Projects Section */}
       <section id="projects-section">
         <div className="container">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps}>
             <p className="section-eyebrow">selected_work</p>
             <h2 className="section-title">Featured <span className="glow-text">projects</span></h2>
             <p className="section-subtitle">Some of my best work and creative endeavors</p>
           </motion.div>
 
-          <div className="grid-3">
+          <motion.div className="grid-3" variants={staggerContainer(0.12)} {...revealProps}>
             {projects.slice(0, 3).map((project, index) => (
-              <ProjectCard key={index} project={project} />
+              <motion.div key={index} variants={fadeUp}>
+                <ProjectCard project={project} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           <div style={{ textAlign: 'center', marginTop: '40px' }}>
             <a
@@ -413,7 +438,7 @@ const Home = () => {
       {/* Contact Section */}
       <section id="contact" style={{ padding: '120px 0' }}>
         <div className="container">
-          <div style={{ textAlign: 'center' }}>
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps} style={{ textAlign: 'center' }}>
             <p className="section-eyebrow" style={{ justifyContent: 'center', display: 'flex' }}>get_in_touch</p>
             <h2 className="section-title">Let's <span className="glow-text">connect</span></h2>
             <p className="section-subtitle">Have a project in mind? Let's work together.</p>
@@ -427,7 +452,7 @@ const Home = () => {
             >
               Go to contact page →
             </a>
-          </div>
+          </motion.div>
         </div>
       </section>
     </>

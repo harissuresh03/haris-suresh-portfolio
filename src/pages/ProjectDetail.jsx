@@ -4,151 +4,96 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaArrowLeft, FaCheck, FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { projects } from '../data/projectsData';
+import { fadeUp, staggerContainer, staggerItem, revealProps } from '../lib/animations';
 
 const ProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
-  // Carousel state
+
+  // Screenshot showcase state
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
-  
+
   // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [currentImage, setCurrentImage] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentImages, setCurrentImages] = useState([]);
-  
-  const project = projects.find(p => p.id === parseInt(id));
 
-  // Get images array (handle both old and new format)
-  const getImageSrc = (img) => {
-    return typeof img === 'object' ? img.src : img;
-  };
+  const project = projects.find((p) => p.id === parseInt(id));
 
-  const getImageCaption = (img) => {
-    return typeof img === 'object' ? img.caption : '';
-  };
+  const getImageSrc = (img) => (typeof img === 'object' ? img.src : img);
+  const getImageCaption = (img) => (typeof img === 'object' ? img.caption : '');
 
   const images = project?.images || [];
   const hasMultipleImages = images.length > 1;
 
-  // Navigation functions for carousel
   const nextSlide = () => {
-    if (hasMultipleImages) {
-      setDirection(1);
-      setCurrentSlide((prev) => (prev + 1) % images.length);
-    }
+    if (!hasMultipleImages) return;
+    setDirection(1);
+    setCurrentSlide((prev) => (prev + 1) % images.length);
   };
 
   const prevSlide = () => {
-    if (hasMultipleImages) {
-      setDirection(-1);
-      setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
-    }
+    if (!hasMultipleImages) return;
+    setDirection(-1);
+    setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
   };
 
-  // Go to specific slide
   const goToSlide = (index) => {
     setDirection(index > currentSlide ? 1 : -1);
     setCurrentSlide(index);
   };
 
-  // Open lightbox with clicked image
   const openLightbox = (index) => {
-    setCurrentImages(images.map(img => getImageSrc(img)));
     setCurrentIndex(index);
-    setCurrentImage(getImageSrc(images[index]));
     setLightboxOpen(true);
     document.body.style.overflow = 'hidden';
   };
 
-  // Close lightbox
   const closeLightbox = () => {
     setLightboxOpen(false);
-    setCurrentImage(null);
-    setCurrentImages([]);
     document.body.style.overflow = 'auto';
   };
 
-  // Next image in lightbox
-  const nextImage = () => {
-    const nextIndex = currentIndex + 1;
-    if (nextIndex < currentImages.length) {
-      setCurrentIndex(nextIndex);
-      setCurrentImage(currentImages[nextIndex]);
-    }
-  };
+  const nextImage = () => setCurrentIndex((i) => Math.min(i + 1, images.length - 1));
+  const prevImage = () => setCurrentIndex((i) => Math.max(i - 1, 0));
 
-  // Previous image in lightbox
-  const prevImage = () => {
-    const prevIndex = currentIndex - 1;
-    if (prevIndex >= 0) {
-      setCurrentIndex(prevIndex);
-      setCurrentImage(currentImages[prevIndex]);
-    }
-  };
-
-  // Keyboard navigation
+  // Keyboard navigation for the lightbox
   useEffect(() => {
-  const handleKeyDown = (e) => {
-    if (lightboxOpen) {
+    const handleKeyDown = (e) => {
+      if (!lightboxOpen) return;
       if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowRight') {
-        const nextIndex = currentIndex + 1;
-        if (nextIndex < currentImages.length) {
-          setCurrentIndex(nextIndex);
-          setCurrentImage(currentImages[nextIndex]);
-        }
-      }
-      if (e.key === 'ArrowLeft') {
-        const prevIndex = currentIndex - 1;
-        if (prevIndex >= 0) {
-          setCurrentIndex(prevIndex);
-          setCurrentImage(currentImages[prevIndex]);
-        }
-      }
-    }
-  };
-  window.addEventListener('keydown', handleKeyDown);
-  return () => window.removeEventListener('keydown', handleKeyDown);
-}, [lightboxOpen, currentIndex, currentImages]);
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxOpen, images.length]);
 
-  // Animation variants
+  // Reset the showcase whenever a different project is opened
+  useEffect(() => {
+    setCurrentSlide(0);
+    setDirection(0);
+  }, [id]);
+
   const slideVariants = {
-    enter: (direction) => ({
-      x: direction > 0 ? 500 : -500,
-      opacity: 0,
-      scale: 0.95
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      scale: 1,
-      transition: {
-        x: { type: 'spring', stiffness: 300, damping: 30 },
-        opacity: { duration: 0.3 },
-        scale: { duration: 0.3 }
-      }
-    },
-    exit: (direction) => ({
-      x: direction > 0 ? -500 : 500,
-      opacity: 0,
-      scale: 0.95,
-      transition: {
-        x: { type: 'spring', stiffness: 300, damping: 30 },
-        opacity: { duration: 0.3 },
-        scale: { duration: 0.3 }
-      }
-    })
+    enter: (dir) => ({ x: dir > 0 ? 400 : -400, opacity: 0 }),
+    center: { x: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 32 } },
+    exit: (dir) => ({ x: dir > 0 ? -400 : 400, opacity: 0, transition: { duration: 0.25 } }),
+  };
+
+  // Swipe support: a drag gesture on the showcase frame advances the slide
+  const handleDragEnd = (e, info) => {
+    if (!hasMultipleImages) return;
+    if (info.offset.x < -60) nextSlide();
+    else if (info.offset.x > 60) prevSlide();
   };
 
   if (!project) {
     return (
-      <div style={{ textAlign: 'center', padding: '120px 20px' }}>
+      <div style={{ textAlign: 'center', padding: '160px 20px 120px' }}>
         <h2>Project not found</h2>
-        <p>Project with ID {id} does not exist.</p>
-        <button onClick={() => navigate('/projects')} className="btn-primary" style={{ marginTop: '20px' }}>
+        <p style={{ color: 'var(--text-secondary)', marginTop: '10px' }}>Project with ID {id} does not exist.</p>
+        <button onClick={() => navigate('/projects')} className="btn-primary" style={{ marginTop: '24px' }}>
           Back to Projects
         </button>
       </div>
@@ -157,374 +102,240 @@ const ProjectDetail = () => {
 
   return (
     <>
-      <section style={{ paddingTop: '120px' }}>
+      <section style={{ paddingTop: '120px', paddingBottom: '40px' }}>
         <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+          <motion.button
+            onClick={() => navigate('/projects')}
+            className="btn-secondary"
+            style={{
+              marginBottom: '30px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              background: 'transparent',
+            }}
+            whileHover={{ x: -3 }}
           >
-            <button 
-              onClick={() => navigate('/projects')} 
-              className="btn-secondary" 
-              style={{ 
-                marginBottom: '30px', 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '10px', 
-                background: 'transparent',
-                cursor: 'pointer'
-              }}
+            <FaArrowLeft /> Back to Projects
+          </motion.button>
+
+          {/* ---- Hero ---- */}
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" className="detail-section">
+            <p className="detail-eyebrow">{project.platform}</p>
+            <h1 style={{ fontSize: '2.6rem', marginBottom: '18px', lineHeight: 1.15, maxWidth: '820px' }}>
+              {project.title}
+            </h1>
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              {project.technologies.map((tech, i) => (
+                <span key={i} className="skill-badge">{tech}</span>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* ---- Overview ---- */}
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps} className="detail-section card" style={{ padding: '36px' }}>
+            <p className="detail-eyebrow">overview</p>
+            <p style={{ lineHeight: '1.85', fontSize: '1.05rem', color: 'var(--text-secondary)', maxWidth: '820px' }}>
+              {project.description}
+            </p>
+          </motion.div>
+
+          {/* ---- Features ---- */}
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps} className="detail-section">
+            <p className="detail-eyebrow">key_features</p>
+            <h2 style={{ marginBottom: '22px', fontSize: '1.5rem' }}>What it does</h2>
+            <motion.div
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}
+              variants={staggerContainer(0.08)}
+              {...revealProps}
             >
-              <FaArrowLeft /> Back to Projects
-            </button>
+              {project.features.map((feature, i) => (
+                <motion.div
+                  key={i}
+                  variants={staggerItem}
+                  className="card glow-on-hover"
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '18px 20px' }}
+                >
+                  <FaCheck style={{ color: 'var(--accent-green)', marginTop: '3px', flexShrink: 0 }} />
+                  <span style={{ color: 'var(--text-secondary)' }}>{feature}</span>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
 
-            <div className="card" style={{ padding: '40px' }}>
-              <h1 style={{ fontSize: '2.5rem', marginBottom: '20px' }}>{project.title}</h1>
-              
-              <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '30px' }}>
-                <div className="skill-badge" style={{ fontSize: '0.85rem', padding: '8px 16px' }}>
-                  <strong className="mono">Platform:</strong> {project.platform}
+          {/* ---- Screenshot Showcase ---- */}
+          {images.length > 0 && (
+            <motion.div variants={fadeUp} initial="hidden" {...revealProps} className="detail-section">
+              <p className="detail-eyebrow">screenshot_showcase</p>
+              <h2 style={{ marginBottom: '20px', fontSize: '1.5rem' }}>A closer look</h2>
+
+              <div className="shot-viewer">
+                <div className="shot-frame">
+                  <AnimatePresence custom={direction} mode="wait">
+                    <motion.div
+                      key={currentSlide}
+                      custom={direction}
+                      variants={slideVariants}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      drag={hasMultipleImages ? 'x' : false}
+                      dragConstraints={{ left: 0, right: 0 }}
+                      dragElastic={0.2}
+                      onDragEnd={handleDragEnd}
+                      style={{ position: 'absolute', inset: 0, cursor: 'pointer' }}
+                      onClick={() => openLightbox(currentSlide)}
+                    >
+                      <img
+                        src={getImageSrc(images[currentSlide])}
+                        alt={`${project.title} screenshot ${currentSlide + 1}`}
+                        loading="lazy"
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+
+                  {hasMultipleImages && (
+                    <>
+                      <button className="shot-nav-btn prev" onClick={(e) => { e.stopPropagation(); prevSlide(); }} aria-label="Previous screenshot">
+                        <FaChevronLeft />
+                      </button>
+                      <button className="shot-nav-btn next" onClick={(e) => { e.stopPropagation(); nextSlide(); }} aria-label="Next screenshot">
+                        <FaChevronRight />
+                      </button>
+                    </>
+                  )}
                 </div>
+
+                {getImageCaption(images[currentSlide]) && (
+                  <div className="shot-caption">{getImageCaption(images[currentSlide])}</div>
+                )}
               </div>
 
-              <h2 style={{ marginBottom: '15px', color: 'var(--accent-pink)' }}>Description</h2>
-              <p style={{ marginBottom: '30px', lineHeight: '1.8', fontSize: '1.05rem', color: 'var(--text-secondary)' }}>
-                {project.description}
-              </p>
-
-              <h2 style={{ marginBottom: '15px', color: 'var(--accent-pink)' }}>Technologies Used</h2>
-              <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px' }}>
-                {project.technologies.map((tech, i) => (
-                  <span key={i} className="skill-badge" style={{ fontSize: '1rem', padding: '8px 20px' }}>
-                    {tech}
-                  </span>
-                ))}
-              </div>
-
-              <h2 style={{ marginBottom: '15px', color: 'var(--accent-pink)' }}>Key Features</h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '15px', marginBottom: '30px' }}>
-                {project.features.map((feature, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <FaCheck style={{ color: 'var(--accent-pink)' }} />
-                    <span style={{ color: 'var(--text-secondary)' }}>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Carousel Gallery Section */}
-              {images.length > 0 && (
-                <>
-                  <h2 style={{ marginBottom: '15px', color: 'var(--accent-pink)' }}>Screenshots</h2>
-                  
-                  <div style={{ marginBottom: '30px' }}>
-                    {/* Main Carousel */}
-                    <div style={{ 
-                      position: 'relative', 
-                      borderRadius: '15px', 
-                      overflow: 'hidden',
-                      background: 'rgba(0,0,0,0.3)'
-                    }}>
-                      <AnimatePresence custom={direction} mode="wait">
-                        <motion.div
-                          key={currentSlide}
-                          custom={direction}
-                          variants={slideVariants}
-                          initial="enter"
-                          animate="center"
-                          exit="exit"
-                          style={{
-                            width: '100%',
-                            cursor: 'pointer',
-                            position: 'relative'
-                          }}
-                          onClick={() => openLightbox(currentSlide)}
-                        >
-                          <img
-                            src={getImageSrc(images[currentSlide])}
-                            alt={`Screenshot ${currentSlide + 1}`}
-                            style={{
-                              width: '100%',
-                              height: '450px',
-                              objectFit: 'contain',
-                              background: 'rgba(0,0,0,0.5)'
-                            }}
-                          />
-                          
-                          {/* Caption overlay */}
-                          {getImageCaption(images[currentSlide]) && (
-                            <div style={{
-                              position: 'absolute',
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
-                              color: 'white',
-                              padding: '20px',
-                              textAlign: 'center',
-                              fontSize: '0.9rem'
-                            }}>
-                              {getImageCaption(images[currentSlide])}
-                            </div>
-                          )}
-                        </motion.div>
-                      </AnimatePresence>
-
-                      {/* Navigation Arrows */}
-                      {hasMultipleImages && (
-                        <>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); prevSlide(); }}
-                            style={{
-                              position: 'absolute',
-                              left: '10px',
-                              top: '50%',
-                              transform: 'translateY(-50%)',
-                              background: 'rgba(0,0,0,0.5)',
-                              border: 'none',
-                              color: 'white',
-                              fontSize: '1.5rem',
-                              cursor: 'pointer',
-                              padding: '10px 15px',
-                              borderRadius: '50%',
-                              transition: 'all 0.3s ease',
-                              zIndex: 10
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.8)'}
-                            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.5)'}
-                          >
-                            <FaChevronLeft />
-                          </button>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); nextSlide(); }}
-                            style={{
-                              position: 'absolute',
-                              right: '10px',
-                              top: '50%',
-                              transform: 'translateY(-50%)',
-                              background: 'rgba(0,0,0,0.5)',
-                              border: 'none',
-                              color: 'white',
-                              fontSize: '1.5rem',
-                              cursor: 'pointer',
-                              padding: '10px 15px',
-                              borderRadius: '50%',
-                              transition: 'all 0.3s ease',
-                              zIndex: 10
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.8)'}
-                            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.5)'}
-                          >
-                            <FaChevronRight />
-                          </button>
-                        </>
-                      )}
-                    </div>
-
-                    {/* Thumbnail Navigation */}
-                    {hasMultipleImages && (
-                      <div style={{
-                        display: 'flex',
-                        gap: '10px',
-                        justifyContent: 'center',
-                        marginTop: '15px',
-                        flexWrap: 'wrap'
-                      }}>
-                        {images.map((img, idx) => (
-                          <motion.div
-                            key={idx}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => goToSlide(idx)}
-                            style={{
-                              width: '70px',
-                              height: '70px',
-                              borderRadius: '8px',
-                              overflow: 'hidden',
-                              cursor: 'pointer',
-                              border: idx === currentSlide ? '3px solid var(--accent-pink)' : '2px solid transparent',
-                              opacity: idx === currentSlide ? 1 : 0.6,
-                              transition: 'all 0.3s ease'
-                            }}
-                          >
-                            <img
-                              src={getImageSrc(img)}
-                              alt={`Thumbnail ${idx + 1}`}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover'
-                              }}
-                            />
-                          </motion.div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Click to enlarge hint */}
-                    <p style={{
-                      textAlign: 'center',
-                      fontSize: '0.8rem',
-                      color: 'var(--text-secondary)',
-                      marginTop: '10px'
-                    }}>
-                      Click on image to view full size
-                    </p>
-                  </div>
-                </>
+              {hasMultipleImages && (
+                <div className="shot-thumbs">
+                  {images.map((img, idx) => (
+                    <motion.div
+                      key={idx}
+                      className={`shot-thumb ${idx === currentSlide ? 'active' : ''}`}
+                      onClick={() => goToSlide(idx)}
+                      whileHover={{ scale: 1.06 }}
+                      whileTap={{ scale: 0.94 }}
+                    >
+                      <img src={getImageSrc(img)} alt={`Thumbnail ${idx + 1}`} loading="lazy" />
+                    </motion.div>
+                  ))}
+                </div>
               )}
 
-              <div style={{ textAlign: 'center' }}>
-                <a 
-                  href={project.githubUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="btn-primary" 
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '1.1rem', textDecoration: 'none' }}
-                >
-                  <FaGithub size={24} /> View on GitHub
-                </a>
-              </div>
-            </div>
+              <p className="mono" style={{ textAlign: 'center', fontSize: '0.78rem', color: 'var(--text-tertiary)', marginTop: '10px' }}>
+                click or swipe to browse · click image to view full size
+              </p>
+            </motion.div>
+          )}
+
+          {/* ---- CTA ---- */}
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps} style={{ textAlign: 'center', marginTop: '20px' }}>
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '1.05rem', textDecoration: 'none' }}
+            >
+              <FaGithub size={20} /> View on GitHub
+            </a>
           </motion.div>
         </div>
       </section>
 
-      {/* Lightbox Modal (same as before but with caption) */}
-      {lightboxOpen && currentImage && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.95)',
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer'
-          }}
-          onClick={closeLightbox}
-        >
-          <button
-            onClick={closeLightbox}
+      {/* ---- Lightbox ---- */}
+      <AnimatePresence>
+        {lightboxOpen && images[currentIndex] && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             style={{
-              position: 'absolute',
-              top: '20px',
-              right: '20px',
-              background: 'none',
-              border: 'none',
-              color: 'white',
-              fontSize: '2rem',
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.95)',
+              zIndex: 9999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               cursor: 'pointer',
-              zIndex: 10000,
-              transition: 'transform 0.3s ease'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            onClick={closeLightbox}
           >
-            <FaTimes />
-          </button>
-
-          {currentImages.length > 1 && currentIndex > 0 && (
             <button
-              onClick={(e) => { e.stopPropagation(); prevImage(); }}
+              onClick={closeLightbox}
+              aria-label="Close"
               style={{
-                position: 'absolute',
-                left: '20px',
-                background: 'rgba(255, 255, 255, 0.2)',
-                border: 'none',
-                color: 'white',
-                fontSize: '2rem',
-                cursor: 'pointer',
-                padding: '10px 20px',
-                borderRadius: '50%',
-                transition: 'all 0.3s ease',
-                zIndex: 10000
+                position: 'absolute', top: '20px', right: '20px', background: 'none', border: 'none',
+                color: 'white', fontSize: '2rem', cursor: 'pointer', zIndex: 10000,
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.4)'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)'}
             >
-              ←
+              <FaTimes />
             </button>
-          )}
 
-          {currentImages.length > 1 && currentIndex < currentImages.length - 1 && (
-            <button
-              onClick={(e) => { e.stopPropagation(); nextImage(); }}
-              style={{
-                position: 'absolute',
-                right: '20px',
-                background: 'rgba(255, 255, 255, 0.2)',
-                border: 'none',
-                color: 'white',
-                fontSize: '2rem',
-                cursor: 'pointer',
-                padding: '10px 20px',
-                borderRadius: '50%',
-                transition: 'all 0.3s ease',
-                zIndex: 10000
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.4)'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)'}
-            >
-              →
-            </button>
-          )}
+            {images.length > 1 && currentIndex > 0 && (
+              <button
+                onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                aria-label="Previous"
+                style={{
+                  position: 'absolute', left: '20px', background: 'rgba(255,255,255,0.15)', border: 'none',
+                  color: 'white', fontSize: '1.6rem', cursor: 'pointer', padding: '12px 18px', borderRadius: '50%', zIndex: 10000,
+                }}
+              >
+                <FaChevronLeft />
+              </button>
+            )}
 
-          {currentImages.length > 1 && (
-            <div style={{
-              position: 'absolute',
-              bottom: '20px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              color: 'white',
-              background: 'rgba(0, 0, 0, 0.7)',
-              padding: '5px 15px',
-              borderRadius: '20px',
-              fontSize: '0.9rem',
-              zIndex: 10000
-            }}>
-              {currentIndex + 1} / {currentImages.length}
-            </div>
-          )}
+            {images.length > 1 && currentIndex < images.length - 1 && (
+              <button
+                onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                aria-label="Next"
+                style={{
+                  position: 'absolute', right: '20px', background: 'rgba(255,255,255,0.15)', border: 'none',
+                  color: 'white', fontSize: '1.6rem', cursor: 'pointer', padding: '12px 18px', borderRadius: '50%', zIndex: 10000,
+                }}
+              >
+                <FaChevronRight />
+              </button>
+            )}
 
-          {/* Caption in lightbox */}
-          {images[currentIndex] && getImageCaption(images[currentIndex]) && (
-            <div style={{
-              position: 'absolute',
-              bottom: '80px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              color: 'white',
-              background: 'rgba(0, 0, 0, 0.7)',
-              padding: '8px 20px',
-              borderRadius: '20px',
-              fontSize: '0.9rem',
-              zIndex: 10000,
-              maxWidth: '80%',
-              textAlign: 'center'
-            }}>
-              {getImageCaption(images[currentIndex])}
-            </div>
-          )}
+            {images.length > 1 && (
+              <div className="mono" style={{
+                position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)',
+                color: 'white', background: 'rgba(0,0,0,0.7)', padding: '5px 15px', borderRadius: '20px', fontSize: '0.85rem', zIndex: 10000,
+              }}>
+                {currentIndex + 1} / {images.length}
+              </div>
+            )}
 
-          <img
-            src={currentImage}
-            alt="Screenshot view"
-            style={{
-              maxWidth: '90%',
-              maxHeight: '90%',
-              objectFit: 'contain',
-              borderRadius: '10px',
-              cursor: 'default'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      )}
+            {getImageCaption(images[currentIndex]) && (
+              <div style={{
+                position: 'absolute', bottom: '60px', left: '50%', transform: 'translateX(-50%)',
+                color: 'white', background: 'rgba(0,0,0,0.7)', padding: '8px 20px', borderRadius: '20px',
+                fontSize: '0.9rem', zIndex: 10000, maxWidth: '80%', textAlign: 'center',
+              }}>
+                {getImageCaption(images[currentIndex])}
+              </div>
+            )}
+
+            <motion.img
+              key={currentIndex}
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.2 }}
+              src={getImageSrc(images[currentIndex])}
+              alt="Screenshot view"
+              style={{ maxWidth: '90%', maxHeight: '85%', objectFit: 'contain', borderRadius: '10px', cursor: 'default' }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
