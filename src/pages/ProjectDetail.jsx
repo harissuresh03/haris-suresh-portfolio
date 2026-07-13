@@ -1,5 +1,5 @@
 // src/pages/ProjectDetail.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaArrowLeft, FaCheck, FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
@@ -48,29 +48,45 @@ const ProjectDetail = () => {
     document.body.style.overflow = 'hidden';
   };
 
-  const closeLightbox = () => {
-    setLightboxOpen(false);
-    document.body.style.overflow = 'auto';
-  };
+  const closeLightbox = useCallback(() => {
+  setLightboxOpen(false);
+  document.body.style.overflow = 'auto';
+}, []);
 
-  const nextImage = () => setCurrentIndex((i) => Math.min(i + 1, images.length - 1));
-  const prevImage = () => setCurrentIndex((i) => Math.max(i - 1, 0));
+const nextImage = useCallback(() => {
+  setCurrentIndex((i) => Math.min(i + 1, images.length - 1));
+}, [images.length]);
+
+const prevImage = useCallback(() => {
+  setCurrentIndex((i) => Math.max(i - 1, 0));
+}, [images.length]);
 
   // Keyboard navigation for the lightbox
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (!lightboxOpen) return;
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowRight') {
-        setCurrentIndex((i) => Math.min(i + 1, images.length - 1));
-      }
-      if (e.key === 'ArrowLeft') {
-        setCurrentIndex((i) => Math.max(i - 1, 0));
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxOpen, nextImage, prevImage, images.length]);
+  if (!lightboxOpen) return;
+
+  const handleKeyDown = (e) => {
+    switch (e.key) {
+      case 'Escape':
+        closeLightbox();
+        break;
+      case 'ArrowRight':
+        nextImage();
+        break;
+      case 'ArrowLeft':
+        prevImage();
+        break;
+      default:
+        break;
+    }
+  };
+
+  window.addEventListener('keydown', handleKeyDown);
+
+  return () => {
+    window.removeEventListener('keydown', handleKeyDown);
+  };
+}, [lightboxOpen, closeLightbox, nextImage, prevImage]);
 
   // Reset the showcase whenever a different project is opened
   useEffect(() => {
