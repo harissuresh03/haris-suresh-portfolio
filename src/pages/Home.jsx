@@ -11,11 +11,9 @@ import badge from '../assets/images/badge.jpg';
 import {
   fadeUp,
   fadeLeft,
-  fadeRight,
   scaleIn,
   staggerContainer,
   staggerItem,
-  buttonHover,
   revealProps,
 } from '../lib/animations';
 
