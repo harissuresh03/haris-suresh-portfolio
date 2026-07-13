@@ -59,7 +59,7 @@ const nextImage = useCallback(() => {
 
 const prevImage = useCallback(() => {
   setCurrentIndex((i) => Math.max(i - 1, 0));
-}, [images.length]);
+}, []);
 
   // Keyboard navigation for the lightbox
   useEffect(() => {
