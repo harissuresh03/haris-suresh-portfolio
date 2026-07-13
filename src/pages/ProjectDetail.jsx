@@ -4,7 +4,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaArrowLeft, FaCheck, FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { projects } from '../data/projectsData';
-import { fadeUp, staggerContainer, staggerItem, revealProps } from '../lib/animations';
 
 const ProjectDetail = () => {
   const { id } = useParams();
@@ -62,12 +61,16 @@ const ProjectDetail = () => {
     const handleKeyDown = (e) => {
       if (!lightboxOpen) return;
       if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowRight') nextImage();
-      if (e.key === 'ArrowLeft') prevImage();
+      if (e.key === 'ArrowRight') {
+        setCurrentIndex((i) => Math.min(i + 1, images.length - 1));
+      }
+      if (e.key === 'ArrowLeft') {
+        setCurrentIndex((i) => Math.max(i - 1, 0));
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxOpen, images.length]);
+  }, [lightboxOpen, nextImage, prevImage]);
 
   // Reset the showcase whenever a different project is opened
   useEffect(() => {
@@ -120,7 +123,7 @@ const ProjectDetail = () => {
           </motion.button>
 
           {/* ---- Hero ---- */}
-          <motion.div variants={fadeUp} initial="hidden" animate="visible" className="detail-section">
+          <div className="detail-section">
             <p className="detail-eyebrow">{project.platform}</p>
             <h1 style={{ fontSize: '2.6rem', marginBottom: '18px', lineHeight: 1.15, maxWidth: '820px' }}>
               {project.title}
@@ -130,42 +133,39 @@ const ProjectDetail = () => {
                 <span key={i} className="skill-badge">{tech}</span>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* ---- Overview ---- */}
-          <motion.div variants={fadeUp} initial="hidden" {...revealProps} className="detail-section card" style={{ padding: '36px' }}>
+          <div className="detail-section card" style={{ padding: '36px' }}>
             <p className="detail-eyebrow">overview</p>
             <p style={{ lineHeight: '1.85', fontSize: '1.05rem', color: 'var(--text-secondary)', maxWidth: '820px' }}>
               {project.description}
             </p>
-          </motion.div>
+          </div>
 
           {/* ---- Features ---- */}
-          <motion.div variants={fadeUp} initial="hidden" {...revealProps} className="detail-section">
+          <div className="detail-section">
             <p className="detail-eyebrow">key_features</p>
             <h2 style={{ marginBottom: '22px', fontSize: '1.5rem' }}>What it does</h2>
-            <motion.div
+            <div
               style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}
-              variants={staggerContainer(0.08)}
-              {...revealProps}
             >
               {project.features.map((feature, i) => (
-                <motion.div
+                <div
                   key={i}
-                  variants={staggerItem}
                   className="card glow-on-hover"
                   style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '18px 20px' }}
                 >
                   <FaCheck style={{ color: 'var(--accent-green)', marginTop: '3px', flexShrink: 0 }} />
                   <span style={{ color: 'var(--text-secondary)' }}>{feature}</span>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* ---- Screenshot Showcase ---- */}
           {images.length > 0 && (
-            <motion.div variants={fadeUp} initial="hidden" {...revealProps} className="detail-section">
+            <div className="detail-section">
               <p className="detail-eyebrow">screenshot_showcase</p>
               <h2 style={{ marginBottom: '20px', fontSize: '1.5rem' }}>A closer look</h2>
 
@@ -190,6 +190,7 @@ const ProjectDetail = () => {
                         src={getImageSrc(images[currentSlide])}
                         alt={`${project.title} screenshot ${currentSlide + 1}`}
                         loading="lazy"
+                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                       />
                     </motion.div>
                   </AnimatePresence>
@@ -227,14 +228,14 @@ const ProjectDetail = () => {
                 </div>
               )}
 
-              <p className="mono" style={{ textAlign: 'center', fontSize: '0.78rem', color: 'var(--text-tertiary)', marginTop: '10px' }}>
+              <p style={{ textAlign: 'center', fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '10px' }}>
                 click or swipe to browse · click image to view full size
               </p>
-            </motion.div>
+            </div>
           )}
 
           {/* ---- CTA ---- */}
-          <motion.div variants={fadeUp} initial="hidden" {...revealProps} style={{ textAlign: 'center', marginTop: '20px' }}>
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
             <a
               href={project.githubUrl}
               target="_blank"
@@ -244,7 +245,7 @@ const ProjectDetail = () => {
             >
               <FaGithub size={20} /> View on GitHub
             </a>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -305,7 +306,7 @@ const ProjectDetail = () => {
             )}
 
             {images.length > 1 && (
-              <div className="mono" style={{
+              <div style={{
                 position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)',
                 color: 'white', background: 'rgba(0,0,0,0.7)', padding: '5px 15px', borderRadius: '20px', fontSize: '0.85rem', zIndex: 10000,
               }}>
