@@ -31,56 +31,11 @@ import ipetrocover from '../assets/images/ipetro.png';
 import farm2screencover from '../assets/images/farm2screen.png';
 import lumoracover from '../assets/images/lumora.png';
 import retinalcover from '../assets/images/retinal.png';
-import examcover from '../assets/images/exam_management_system.png';
+import examcover from '../assets/images/exam_management_system.jpg';
 
 export const projects = [
   {
     id: 1,
-    title: 'iPetro : Inspection Report Generator',
-    description: 'iPetro : Inspection Report Generator is a web-based system designed to streamline the management and monitoring of industry-related operations. The platform allows users to efficiently handle data related to inventory, services, and operational records through a structured digital interface. It focuses on improving data organization, accessibility, and workflow efficiency within industrial environments. The system aims to modernize traditional manual processes by providing a centralized and user-friendly management solution.',
-    technologies: ['PHP', 'Laravel', 'Blade', 'Node.js'],
-    platform: 'Web Application',
-    githubUrl: 'https://github.com/amircoderf/Workshop2-iPetro',
-    coverImage: ipetrocover,
-    images: [
-      { src: ipetro1, caption: 'Main inspection dashboard' },
-      { src: ipetro2, caption: 'Generated inspection report' },
-      { src: ipetro3, caption: 'Inspection summary' },
-      { src: ipetro4, caption: 'Photo Organization' },
-      { src: ipetro5, caption: 'Bulk edit interface for photos' },
-      { src: ipetro6, caption: 'Photo batch upload and sorting' },
-      { src: ipetro7, caption: 'Main dashboard' }
-    ],
-    features: [
-      'Inspection record tracking and management',
-      'Automated API 510 Report generation',
-      'Photo Organization and Storage',
-      'Analytics Dashboard',
-    ]
-  },
-  {
-    id: 2,
-    title: 'Farm2Screen',
-    description: 'The Farm2screen is an innovative online marketplace designed to transform how farmers market and sell their pineapples directly to consumers, wholesalers, and businesses. Aligning with the project’s vision to transform the way people connect, shop and grow businesses online, the platform provides a convenient, trustworthy, and personalized e-commerce experience for both farmers and buyers. At its core, the platform empowers pineapple farmers by giving them the tools to list, promote, and manage their products online without relying on middlemen. The platform aims to support real-time pricing, streamline order management, and provide broader market exposure through increased online visibility and enable farmers to expand their customer base and boost sales.',
-    technologies: ['Dart', 'Flutter', 'Firebase'],
-    platform: 'Mobile Application (Cross-platform)',
-    githubUrl: 'https://github.com/Shom3s/farm2screen',
-    coverImage: farm2screencover,
-    images: [
-      { src: farm2screen1, caption: 'Sales Analytics screen' },
-      { src: farm2screen2, caption: 'My products screen' },
-      { src: farm2screen3, caption: 'Sales Analytics screen 2' },
-      { src: farm2screen4, caption: '"Pineapple" product screen' },
-      { src: farm2screen5, caption: 'Product details screen' }
-    ],
-    features: [
-      'Real-time pricing and order management',
-      'Direct farmer-to-customer transactions',
-      'Market expansion through online visibility'
-    ]
-  },
-  {
-    id: 3,
     title: 'Lumora: Smart Mental Health Monitoring System for Students',
     description: 'Lumora is a smart mental health monitoring web application designed for university students to track their emotional well-being, identify early signs of stress or mental health risks, and receive personalized support. The platform provides continuous mental health monitoring through mood tracking, self-assessment journals, behavioral insights, and data-driven recommendations. Unlike generic wellness apps, Lumora integrates AI-driven emotional support and counsellor oversight, aiming to encourage self-awareness and proactive mental health care among students.',
     technologies: ['JavaScript', 'React.js', 'HTML & CSS', 'Express.js (Node.js framework)', 'MySQL'],
@@ -107,6 +62,51 @@ export const projects = [
       'AI-Moderated Peer Support',
       'Academic Stress Prediction',
       'Personalized recommendations'
+    ]
+  },
+  {
+    id: 2,
+    title: 'Farm2Screen',
+    description: 'The Farm2screen is an innovative online marketplace designed to transform how farmers market and sell their pineapples directly to consumers, wholesalers, and businesses. Aligning with the project’s vision to transform the way people connect, shop and grow businesses online, the platform provides a convenient, trustworthy, and personalized e-commerce experience for both farmers and buyers. At its core, the platform empowers pineapple farmers by giving them the tools to list, promote, and manage their products online without relying on middlemen. The platform aims to support real-time pricing, streamline order management, and provide broader market exposure through increased online visibility and enable farmers to expand their customer base and boost sales.',
+    technologies: ['Dart', 'Flutter', 'Firebase'],
+    platform: 'Mobile Application (Cross-platform)',
+    githubUrl: 'https://github.com/Shom3s/farm2screen',
+    coverImage: farm2screencover,
+    images: [
+      { src: farm2screen1, caption: 'Sales Analytics screen' },
+      { src: farm2screen2, caption: 'My products screen' },
+      { src: farm2screen3, caption: 'Sales Analytics screen 2' },
+      { src: farm2screen4, caption: '"Pineapple" product screen' },
+      { src: farm2screen5, caption: 'Product details screen' }
+    ],
+    features: [
+      'Real-time pricing and order management',
+      'Direct farmer-to-customer transactions',
+      'Market expansion through online visibility'
+    ]
+  },
+  {
+    id: 3,
+    title: 'iPetro : Inspection Report Generator',
+    description: 'iPetro : Inspection Report Generator is a web-based system designed to streamline the management and monitoring of industry-related operations. The platform allows users to efficiently handle data related to inventory, services, and operational records through a structured digital interface. It focuses on improving data organization, accessibility, and workflow efficiency within industrial environments. The system aims to modernize traditional manual processes by providing a centralized and user-friendly management solution.',
+    technologies: ['PHP', 'Laravel', 'Blade', 'Node.js'],
+    platform: 'Web Application',
+    githubUrl: 'https://github.com/amircoderf/Workshop2-iPetro',
+    coverImage: ipetrocover,
+    images: [
+      { src: ipetro1, caption: 'Main inspection dashboard' },
+      { src: ipetro2, caption: 'Generated inspection report' },
+      { src: ipetro3, caption: 'Inspection summary' },
+      { src: ipetro4, caption: 'Photo Organization' },
+      { src: ipetro5, caption: 'Bulk edit interface for photos' },
+      { src: ipetro6, caption: 'Photo batch upload and sorting' },
+      { src: ipetro7, caption: 'Main dashboard' }
+    ],
+    features: [
+      'Inspection record tracking and management',
+      'Automated API 510 Report generation',
+      'Photo Organization and Storage',
+      'Analytics Dashboard',
     ]
   },
   {

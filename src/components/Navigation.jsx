@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaBars, FaTimes } from 'react-icons/fa';
+import ThemeToggle from './ThemeToggle';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,35 +75,39 @@ const Navigation = () => {
           </motion.span>
         </Link>
 
-        <div className="mobile-menu-btn" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <FaTimes /> : <FaBars />}
-        </div>
+        <div className="nav-right">
+          <ThemeToggle />
 
-        <ul className={`nav-links ${isOpen ? 'active' : ''}`}>
-          {navItems.map((item, index) => {
-            const active = isItemActive(item);
-            return (
-              <li key={index} style={{ position: 'relative' }}>
-                {item.path === '/' ? (
-                  <button onClick={() => handleNavClick(item.path, item.sectionId)}>
-                    {item.name}
-                  </button>
-                ) : (
-                  <Link to={item.path} onClick={() => setIsOpen(false)}>
-                    {item.name}
-                  </Link>
-                )}
-                {active && (
-                  <motion.span
-                    layoutId="nav-underline"
-                    className="nav-underline"
-                    transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                  />
-                )}
-              </li>
-            );
-          })}
-        </ul>
+          <div className="mobile-menu-btn" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <FaTimes /> : <FaBars />}
+          </div>
+
+          <ul className={`nav-links ${isOpen ? 'active' : ''}`}>
+            {navItems.map((item, index) => {
+              const active = isItemActive(item);
+              return (
+                <li key={index} style={{ position: 'relative' }}>
+                  {item.path === '/' ? (
+                    <button onClick={() => handleNavClick(item.path, item.sectionId)}>
+                      {item.name}
+                    </button>
+                  ) : (
+                    <Link to={item.path} onClick={() => setIsOpen(false)}>
+                      {item.name}
+                    </Link>
+                  )}
+                  {active && (
+                    <motion.span
+                      layoutId="nav-underline"
+                      className="nav-underline"
+                      transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                    />
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </nav>
   );

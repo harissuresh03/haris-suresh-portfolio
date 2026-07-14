@@ -8,6 +8,7 @@ import utemLogo from '../assets/images/education/utem-logo.png';
 import ktjLogo from '../assets/images/education/ktepj-logo.png';
 import smkLogo from '../assets/images/education/samad-logo.png';
 import badge from '../assets/images/badge.jpg';
+import Typewriter from '../components/Typewriter';
 import {
   fadeUp,
   fadeLeft,
@@ -153,12 +154,6 @@ const Home = () => {
         onMouseLeave={handleHeroMouseLeave}
         style={{ position: 'relative', paddingTop: '130px', minHeight: '90vh', display: 'flex', alignItems: 'center' }}
       >
-        <div className="mesh-bg" aria-hidden="true">
-          <div className="mesh-blob b1" />
-          <div className="mesh-blob b2" />
-          <div className="mesh-blob b3" />
-        </div>
-
         <div className="container">
           <motion.div
             variants={staggerContainer(0.15)}
@@ -178,16 +173,20 @@ const Home = () => {
                 <p className="mono" style={{ color: 'var(--accent-blue)', marginBottom: '12px', fontSize: '0.95rem' }}>
                   Hi, my name is
                 </p>
-                <h1 style={{ fontSize: '3.2rem', fontWeight: '700', marginBottom: '16px', lineHeight: '1.15' }}>
-                  Haris Suresh
-                </h1>
+                <Typewriter
+                  as="h1"
+                  text="Haris Suresh"
+                  speed={75}
+                  startDelay={400}
+                  style={{ fontSize: '3.2rem', fontWeight: '700', marginBottom: '16px', lineHeight: '1.15' }}
+                />
                 <h2 style={{ fontSize: '1.5rem', color: 'var(--text-secondary)', marginBottom: '24px', fontWeight: 500 }}>
                   Computer Science Student &amp; Software Developer
                 </h2>
                 <p style={{ marginBottom: '32px', color: 'var(--text-secondary)', maxWidth: '520px', fontFamily: 'var(--font-sans)' }}>
                   A dedicated individual with a solid academic background in computer science,
                   complemented by practical experience in software development and technical projects.
-                  I build with Java, JavaScript, React, Node.js and SQL, and enjoy working
+                  I build with Java, JavaScript, HTML, CSS, React, Node.js and SQL, and enjoy working
                   collaboratively on teams to ship things that work.
                 </p>
 
@@ -220,20 +219,36 @@ const Home = () => {
               </motion.div>
             </div>
 
-            {/* Signature element: code editor window, with subtle parallax tilt */}
+            {/* Signature visual: photo is now the dominant element, with the
+                code editor window as a smaller floating card overlapping its
+                bottom-left corner. Both share the same mouse-parallax tilt. */}
             <motion.div
               variants={staggerItem}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '24px',
-                perspective: 800,
-              }}
+              className="hero-visual"
+              style={{ perspective: 1000 }}
             >
               <motion.div
-                className="editor-window"
+                className="hero-photo-frame"
+                initial={{ clipPath: 'inset(0 100% 0 0)' }}
+                animate={{ clipPath: 'inset(0 0% 0 0)' }}
+                transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
+              >
+                <motion.img
+                  src={profilePic}
+                  alt="Haris Suresh"
+                  className="hero-photo"
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                />
+                <span className="hero-photo-tag mono">~/haris.png</span>
+              </motion.div>
+
+              <motion.div
+                className="editor-window hero-editor-card"
                 style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+                initial={{ opacity: 0, y: 24, rotate: -1.5 }}
+                animate={{ opacity: 1, y: 0, rotate: -1.5 }}
+                transition={{ duration: 0.7, delay: 1, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div className="editor-titlebar">
                   <span className="editor-dot" style={{ background: '#f07178' }}></span>
@@ -245,18 +260,12 @@ const Home = () => {
                   <div className="editor-line"><span className="editor-lineno">1</span><span><span className="tok-kw">const</span> <span className="tok-fn">developer</span> <span className="tok-punc">=</span> <span className="tok-punc">{'{'}</span></span></div>
                   <div className="editor-line"><span className="editor-lineno">2</span><span>&nbsp;&nbsp;name<span className="tok-punc">:</span> <span className="tok-str">'Haris Suresh'</span><span className="tok-punc">,</span></span></div>
                   <div className="editor-line"><span className="editor-lineno">3</span><span>&nbsp;&nbsp;role<span className="tok-punc">:</span> <span className="tok-str">'Software Developer'</span><span className="tok-punc">,</span></span></div>
-                  <div className="editor-line"><span className="editor-lineno">4</span><span>&nbsp;&nbsp;stack<span className="tok-punc">:</span> <span className="tok-punc">[</span><span className="tok-str">'React'</span><span className="tok-punc">,</span> <span className="tok-str">'Node'</span><span className="tok-punc">,</span> <span className="tok-str">'MySQL'</span><span className="tok-punc">],</span></span></div>
+                  <div className="editor-line"><span className="editor-lineno">4</span><span>&nbsp;&nbsp;stack<span className="tok-punc">:</span> <span className="tok-punc">[</span><span className="tok-str">'React'</span><span className="tok-punc">,</span> <span className="tok-str">'Node'</span><span className="tok-punc">,</span> <span className="tok-str">'JavaScript'</span><span className="tok-punc">],</span></span></div>
                   <div className="editor-line"><span className="editor-lineno">5</span><span>&nbsp;&nbsp;location<span className="tok-punc">:</span> <span className="tok-str">'Petaling Jaya, MY'</span><span className="tok-punc">,</span></span></div>
                   <div className="editor-line"><span className="editor-lineno">6</span><span>&nbsp;&nbsp;cgpa<span className="tok-punc">:</span> <span className="tok-const">3.93</span></span></div>
                   <div className="editor-line"><span className="editor-lineno">7</span><span><span className="tok-punc">{'}'}</span><span className="tok-punc">;</span><span className="editor-cursor"></span></span></div>
                 </div>
               </motion.div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                <div className="profile-image-container">
-                  <img src={profilePic} alt="Haris Suresh" className="profile-image" />
-                </div>
-              </div>
             </motion.div>
           </motion.div>
         </div>

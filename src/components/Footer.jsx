@@ -49,7 +49,7 @@ const Footer = () => {
           </motion.a>
         </div>
         <p className="mono" style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>
-          © 2026 Haris Suresh — built with React
+          © 2026 Haris Suresh
         </p>
         <p className="mono" style={{ marginTop: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
           harissuresh03@gmail.com · +60 12-998 8727

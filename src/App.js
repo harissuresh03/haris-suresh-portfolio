@@ -4,11 +4,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
+import AmbientBackground from './components/AmbientBackground';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
 import Contact from './pages/Contact';
 import { pageTransition } from './lib/animations';
+import { ThemeProvider } from './lib/theme';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -55,14 +57,15 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <>
+    <ThemeProvider>
       <ScrollToTop />
+      <AmbientBackground />
       <Navigation />
       <main>
         <AnimatedRoutes />
       </main>
       <Footer />
-    </>
+    </ThemeProvider>
   );
 }
 

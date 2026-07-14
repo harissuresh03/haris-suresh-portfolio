@@ -4,14 +4,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaArrowLeft, FaCheck, FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { projects } from '../data/projectsData';
+import { fadeUp, staggerContainer, staggerItem, revealProps } from '../lib/animations';
+import ScreenshotCarousel from '../components/ScreenshotCarousel';
 
 const ProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Screenshot showcase state
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [direction, setDirection] = useState(0);
+  // Screenshot showcase state — the GSAP carousel is a controlled component,
+  // driven by this index
+  const [activeIndex, setActiveIndex] = useState(0);
 
   // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -25,22 +27,7 @@ const ProjectDetail = () => {
   const images = project?.images || [];
   const hasMultipleImages = images.length > 1;
 
-  const nextSlide = () => {
-    if (!hasMultipleImages) return;
-    setDirection(1);
-    setCurrentSlide((prev) => (prev + 1) % images.length);
-  };
-
-  const prevSlide = () => {
-    if (!hasMultipleImages) return;
-    setDirection(-1);
-    setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
-  };
-
-  const goToSlide = (index) => {
-    setDirection(index > currentSlide ? 1 : -1);
-    setCurrentSlide(index);
-  };
+  const goToSlide = (index) => setActiveIndex(index);
 
   const openLightbox = (index) => {
     setCurrentIndex(index);
@@ -49,63 +36,34 @@ const ProjectDetail = () => {
   };
 
   const closeLightbox = useCallback(() => {
-  setLightboxOpen(false);
-  document.body.style.overflow = 'auto';
-}, []);
+    setLightboxOpen(false);
+    document.body.style.overflow = 'auto';
+  }, []);
 
-const nextImage = useCallback(() => {
-  setCurrentIndex((i) => Math.min(i + 1, images.length - 1));
-}, [images.length]);
+  const nextImage = useCallback(() => {
+    setCurrentIndex((i) => Math.min(i + 1, images.length - 1));
+  }, [images.length]);
 
-const prevImage = useCallback(() => {
-  setCurrentIndex((i) => Math.max(i - 1, 0));
-}, []);
+  const prevImage = useCallback(() => {
+    setCurrentIndex((i) => Math.max(i - 1, 0));
+  }, []);
 
   // Keyboard navigation for the lightbox
   useEffect(() => {
-  if (!lightboxOpen) return;
-
-  const handleKeyDown = (e) => {
-    switch (e.key) {
-      case 'Escape':
-        closeLightbox();
-        break;
-      case 'ArrowRight':
-        nextImage();
-        break;
-      case 'ArrowLeft':
-        prevImage();
-        break;
-      default:
-        break;
-    }
-  };
-
-  window.addEventListener('keydown', handleKeyDown);
-
-  return () => {
-    window.removeEventListener('keydown', handleKeyDown);
-  };
-}, [lightboxOpen, closeLightbox, nextImage, prevImage]);
+    const handleKeyDown = (e) => {
+      if (!lightboxOpen) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxOpen, closeLightbox, nextImage, prevImage]);
 
   // Reset the showcase whenever a different project is opened
   useEffect(() => {
-    setCurrentSlide(0);
-    setDirection(0);
+    setActiveIndex(0);
   }, [id]);
-
-  const slideVariants = {
-    enter: (dir) => ({ x: dir > 0 ? 400 : -400, opacity: 0 }),
-    center: { x: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 32 } },
-    exit: (dir) => ({ x: dir > 0 ? -400 : 400, opacity: 0, transition: { duration: 0.25 } }),
-  };
-
-  // Swipe support: a drag gesture on the showcase frame advances the slide
-  const handleDragEnd = (e, info) => {
-    if (!hasMultipleImages) return;
-    if (info.offset.x < -60) nextSlide();
-    else if (info.offset.x > 60) prevSlide();
-  };
 
   if (!project) {
     return (
@@ -139,7 +97,7 @@ const prevImage = useCallback(() => {
           </motion.button>
 
           {/* ---- Hero ---- */}
-          <div className="detail-section">
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" className="detail-section">
             <p className="detail-eyebrow">{project.platform}</p>
             <h1 style={{ fontSize: '2.6rem', marginBottom: '18px', lineHeight: 1.15, maxWidth: '820px' }}>
               {project.title}
@@ -149,91 +107,61 @@ const prevImage = useCallback(() => {
                 <span key={i} className="skill-badge">{tech}</span>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* ---- Overview ---- */}
-          <div className="detail-section card" style={{ padding: '36px' }}>
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps} className="detail-section card" style={{ padding: '36px' }}>
             <p className="detail-eyebrow">overview</p>
             <p style={{ lineHeight: '1.85', fontSize: '1.05rem', color: 'var(--text-secondary)', maxWidth: '820px' }}>
               {project.description}
             </p>
-          </div>
+          </motion.div>
 
           {/* ---- Features ---- */}
-          <div className="detail-section">
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps} className="detail-section">
             <p className="detail-eyebrow">key_features</p>
             <h2 style={{ marginBottom: '22px', fontSize: '1.5rem' }}>What it does</h2>
-            <div
+            <motion.div
               style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}
+              variants={staggerContainer(0.08)}
+              {...revealProps}
             >
               {project.features.map((feature, i) => (
-                <div
+                <motion.div
                   key={i}
+                  variants={staggerItem}
                   className="card glow-on-hover"
                   style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '18px 20px' }}
                 >
                   <FaCheck style={{ color: 'var(--accent-green)', marginTop: '3px', flexShrink: 0 }} />
                   <span style={{ color: 'var(--text-secondary)' }}>{feature}</span>
-                </div>
+                </motion.div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* ---- Screenshot Showcase ---- */}
           {images.length > 0 && (
-            <div className="detail-section">
+            <motion.div variants={fadeUp} initial="hidden" {...revealProps} className="detail-section">
               <p className="detail-eyebrow">screenshot_showcase</p>
               <h2 style={{ marginBottom: '20px', fontSize: '1.5rem' }}>A closer look</h2>
 
-              <div className="shot-viewer">
-                <div className="shot-frame">
-                  <AnimatePresence custom={direction} mode="wait">
-                    <motion.div
-                      key={currentSlide}
-                      custom={direction}
-                      variants={slideVariants}
-                      initial="enter"
-                      animate="center"
-                      exit="exit"
-                      drag={hasMultipleImages ? 'x' : false}
-                      dragConstraints={{ left: 0, right: 0 }}
-                      dragElastic={0.2}
-                      onDragEnd={handleDragEnd}
-                      style={{ position: 'absolute', inset: 0, cursor: 'pointer' }}
-                      onClick={() => openLightbox(currentSlide)}
-                    >
-                      <img
-                        src={getImageSrc(images[currentSlide])}
-                        alt={`${project.title} screenshot ${currentSlide + 1}`}
-                        loading="lazy"
-                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                      />
-                    </motion.div>
-                  </AnimatePresence>
-
-                  {hasMultipleImages && (
-                    <>
-                      <button className="shot-nav-btn prev" onClick={(e) => { e.stopPropagation(); prevSlide(); }} aria-label="Previous screenshot">
-                        <FaChevronLeft />
-                      </button>
-                      <button className="shot-nav-btn next" onClick={(e) => { e.stopPropagation(); nextSlide(); }} aria-label="Next screenshot">
-                        <FaChevronRight />
-                      </button>
-                    </>
-                  )}
-                </div>
-
-                {getImageCaption(images[currentSlide]) && (
-                  <div className="shot-caption">{getImageCaption(images[currentSlide])}</div>
-                )}
-              </div>
+              <ScreenshotCarousel
+                images={images}
+                activeIndex={activeIndex}
+                onChange={setActiveIndex}
+                getImageSrc={getImageSrc}
+                getImageCaption={getImageCaption}
+                onImageClick={openLightbox}
+                title={project.title}
+              />
 
               {hasMultipleImages && (
                 <div className="shot-thumbs">
                   {images.map((img, idx) => (
                     <motion.div
                       key={idx}
-                      className={`shot-thumb ${idx === currentSlide ? 'active' : ''}`}
+                      className={`shot-thumb ${idx === activeIndex ? 'active' : ''}`}
                       onClick={() => goToSlide(idx)}
                       whileHover={{ scale: 1.06 }}
                       whileTap={{ scale: 0.94 }}
@@ -244,14 +172,14 @@ const prevImage = useCallback(() => {
                 </div>
               )}
 
-              <p style={{ textAlign: 'center', fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '10px' }}>
+              <p className="mono" style={{ textAlign: 'center', fontSize: '0.78rem', color: 'var(--text-tertiary)', marginTop: '10px' }}>
                 click or swipe to browse · click image to view full size
               </p>
-            </div>
+            </motion.div>
           )}
 
           {/* ---- CTA ---- */}
-          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <motion.div variants={fadeUp} initial="hidden" {...revealProps} style={{ textAlign: 'center', marginTop: '20px' }}>
             <a
               href={project.githubUrl}
               target="_blank"
@@ -261,7 +189,7 @@ const prevImage = useCallback(() => {
             >
               <FaGithub size={20} /> View on GitHub
             </a>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -322,7 +250,7 @@ const prevImage = useCallback(() => {
             )}
 
             {images.length > 1 && (
-              <div style={{
+              <div className="mono" style={{
                 position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)',
                 color: 'white', background: 'rgba(0,0,0,0.7)', padding: '5px 15px', borderRadius: '20px', fontSize: '0.85rem', zIndex: 10000,
               }}>
