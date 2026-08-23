@@ -6,10 +6,12 @@ import { FaGithub, FaArrowLeft, FaCheck, FaTimes, FaChevronLeft, FaChevronRight 
 import { projects } from '../data/projectsData';
 import { fadeUp, staggerContainer, staggerItem, revealProps } from '../lib/animations';
 import ScreenshotCarousel from '../components/ScreenshotCarousel';
+import { usePixelTransition } from '../components/PixelTransition';
 
 const ProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const goToProjects = usePixelTransition();
 
   // Screenshot showcase state — the GSAP carousel is a controlled component,
   // driven by this index
@@ -70,7 +72,7 @@ const ProjectDetail = () => {
       <div style={{ textAlign: 'center', padding: '160px 20px 120px' }}>
         <h2>Project not found</h2>
         <p style={{ color: 'var(--text-secondary)', marginTop: '10px' }}>Project with ID {id} does not exist.</p>
-        <button onClick={() => navigate('/projects')} className="btn-primary" style={{ marginTop: '24px' }}>
+        <button onClick={() => goToProjects('/projects', navigate)} className="btn-primary" style={{ marginTop: '24px' }}>
           Back to Projects
         </button>
       </div>
@@ -82,7 +84,7 @@ const ProjectDetail = () => {
       <section style={{ paddingTop: '120px', paddingBottom: '40px' }}>
         <div className="container">
           <motion.button
-            onClick={() => navigate('/projects')}
+            onClick={() => goToProjects('/projects', navigate)}
             className="btn-secondary"
             style={{
               marginBottom: '30px',
@@ -107,6 +109,12 @@ const ProjectDetail = () => {
                 <span key={i} className="skill-badge">{tech}</span>
               ))}
             </div>
+          </motion.div>
+
+          {/* Shared layoutId with the card's cover — this is what makes the
+              App-Store-style morph transition land on the right element. */}
+          <motion.div className="detail-hero-cover" layoutId={`project-cover-${project.id}`}>
+            <img src={project.coverImage || project.image} alt={project.title} />
           </motion.div>
 
           {/* ---- Overview ---- */}

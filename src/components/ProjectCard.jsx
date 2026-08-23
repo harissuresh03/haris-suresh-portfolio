@@ -1,88 +1,57 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaGithub, FaArrowRight } from 'react-icons/fa';
-import { cardHover, staggerContainer, staggerItem } from '../lib/animations';
+import { usePixelTransition } from './PixelTransition';
 
+// iOS App Store-inspired card: big cover art up top acting like an app
+// icon/hero, title + platform as the "app name / subtitle" row, and a
+// shared layoutId on the cover so it morphs into the detail page's hero
+// image (Framer Motion resolves layoutId matches across route changes).
+// Deliberately static otherwise — no lift/scale/glow hover effect, and no
+// custom-cursor label on hover per the brief.
 const ProjectCard = ({ project, featured = false }) => {
   const navigate = useNavigate();
-  const cardRef = useRef(null);
+  const goToProject = usePixelTransition();
 
   const handleViewDetails = () => {
-    navigate(`/project/${project.id}`);
-  };
-
-  // Cursor-following glow: writes the pointer position into CSS vars that
-  // the .card-glow::before radial-gradient in globals.css reads.
-  const handleMouseMove = (e) => {
-    const el = cardRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty('--mx', `${e.clientX - rect.left}px`);
-    el.style.setProperty('--my', `${e.clientY - rect.top}px`);
+    goToProject(`/project/${project.id}`, navigate);
   };
 
   return (
-    <motion.div
-      ref={cardRef}
-      className="card project-card glow-on-hover card-glow"
-      style={{ padding: 0, overflow: 'hidden', cursor: 'pointer' }}
-      onClick={handleViewDetails}
-      onMouseMove={handleMouseMove}
-      variants={cardHover}
-      initial="rest"
-      whileHover="hover"
-      animate="rest"
-    >
-      <img
-        src={project.coverImage || project.image}
-        alt={project.title}
-        className="project-cover"
-        style={featured ? { height: '340px' } : undefined}
-        loading="lazy"
-      />
-      <div style={{ padding: '22px', position: 'relative', zIndex: 1 }}>
-        <h3 style={{ marginBottom: '10px', fontSize: featured ? '1.35rem' : '1.1rem' }}>{project.title}</h3>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', minHeight: '42px' }}>
-          {project.description.substring(0, featured ? 170 : 90)}...
+    <div className="card project-card appstore-card" onClick={handleViewDetails}>
+      <motion.div className="appstore-cover" layoutId={`project-cover-${project.id}`}>
+        <img
+          src={project.coverImage || project.image}
+          alt={project.title}
+          className="project-cover"
+          style={featured ? { height: '380px' } : undefined}
+          loading="lazy"
+        />
+        <span className="appstore-platform-chip mono">{project.category || project.platform}</span>
+      </motion.div>
+
+      <div className="appstore-body">
+        <h3 style={{ marginBottom: '12px', fontSize: featured ? '1.55rem' : '1.3rem' }}>{project.title}</h3>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.98rem', minHeight: '48px' }}>
+          {project.description.substring(0, featured ? 200 : 130)}...
         </p>
 
-        <motion.div
-          style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '16px 0' }}
-          variants={staggerContainer(0.06)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {project.technologies.slice(0, featured ? 5 : 3).map((tech, i) => (
-            <motion.span key={i} variants={staggerItem} className="skill-badge" style={{ fontSize: '0.72rem' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '18px 0' }}>
+          {project.technologies.slice(0, featured ? 5 : 4).map((tech, i) => (
+            <span key={i} className="skill-badge" style={{ fontSize: '0.78rem' }}>
               {tech}
-            </motion.span>
+            </span>
           ))}
-        </motion.div>
+        </div>
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: '18px',
-            paddingTop: '16px',
-            borderTop: '1px solid var(--border)',
-          }}
-        >
+        <div className="appstore-footer">
           <button
             onClick={(e) => { e.stopPropagation(); handleViewDetails(); }}
             className="mono link-underline"
             style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--accent-blue)',
-              fontSize: '0.85rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: 0,
+              background: 'none', border: 'none', color: 'var(--accent-blue)', fontSize: '0.9rem',
+              display: 'flex', alignItems: 'center', gap: '6px', padding: 0,
             }}
           >
             View project <FaArrowRight size={11} />
@@ -95,14 +64,14 @@ const ProjectCard = ({ project, featured = false }) => {
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
               aria-label="View source on GitHub"
-              style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}
+              className="appstore-github-link"
             >
               <FaGithub />
             </a>
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

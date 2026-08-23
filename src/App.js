@@ -1,14 +1,15 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import Navigation from './components/Navigation';
+import FloatingNav from './components/FloatingNav';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import AmbientBackground from './components/AmbientBackground';
+import CustomCursor from './components/CustomCursor';
+import PixelTransitionProvider from './components/PixelTransition';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
-import Contact from './pages/Contact';
 import { pageTransition } from './lib/animations';
 import { ThemeProvider } from './lib/theme';
 
@@ -42,14 +43,6 @@ function AnimatedRoutes() {
             </motion.div>
           }
         />
-        <Route
-          path="/contact"
-          element={
-            <motion.div {...pageTransition}>
-              <Contact />
-            </motion.div>
-          }
-        />
       </Routes>
     </AnimatePresence>
   );
@@ -58,13 +51,17 @@ function AnimatedRoutes() {
 function App() {
   return (
     <ThemeProvider>
-      <ScrollToTop />
-      <AmbientBackground />
-      <Navigation />
-      <main>
-        <AnimatedRoutes />
-      </main>
-      <Footer />
+      <CustomCursor>
+        <PixelTransitionProvider>
+          <ScrollToTop />
+          <AmbientBackground />
+          <FloatingNav />
+          <main>
+            <AnimatedRoutes />
+          </main>
+          <Footer />
+        </PixelTransitionProvider>
+      </CustomCursor>
     </ThemeProvider>
   );
 }
